@@ -8,8 +8,8 @@ const Results = ({ currentResults, hwIndex, sgIndex, query, noResults }) => {
       {noResults ? (
         <div className='search-result'>
           <p>Term Not Found Via Root</p>
-          <div><a href={DataLoader.findPageImage(query, 'hw', hwIndex)} target="_blank">HW(a)</a></div>
-          <div><a href={DataLoader.findPageImage(query, 'sg', sgIndex)} target="_blank">SG(a)</a></div>
+          <div><a href={DataLoader.findPageImage(query, 'hw', hwIndex)} target="_blank" rel="noopener noreferrer">HW(a)</a></div>
+          <div><a href={DataLoader.findPageImage(query, 'sg', sgIndex)} target="_blank" rel="noopener noreferrer">SG(a)</a></div>
         </div>
       ) : (
         currentResults.length === 0 ? <p>No matches found</p> : currentResults.map((result, idx) => {

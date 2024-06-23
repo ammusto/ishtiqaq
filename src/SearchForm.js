@@ -73,8 +73,6 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
       return Array.from(startingChars).some(char => char >= minInitial && char <= maxInitial);
     });
 
-    let foundResults = false;
-
     Promise.all(filesToSearch.map(entry => {
       const filePath = `${process.env.PUBLIC_URL}/${entry.file}`;
       return fetch(filePath)
@@ -86,9 +84,7 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
             const isMatch = regexPattern.test(word);
             return isMatch;
           });
-          if (matchedWords.length > 0) {
-            foundResults = true;
-          }
+
           return matchedWords;
         })
         .catch(error => {
