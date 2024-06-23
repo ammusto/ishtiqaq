@@ -1,0 +1,37 @@
+.container {
+    margin:auto;
+    width:1200px;
+
+}
+
+.main {
+    text-align: center;
+    
+}
+
+.link-button {
+    background-color: transparent;
+    border:0px;
+    cursor: pointer;
+}
+
+.link-button:hover {
+text-decoration: underline;
+}
+
+button {
+    background-color: #ccc;
+    color: black;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    min-height: 35px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+button:hover {
+    background-color: #333;
+    color: white;
+
+}

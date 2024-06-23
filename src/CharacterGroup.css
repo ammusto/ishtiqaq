@@ -1,0 +1,78 @@
+.additional-char-input {
+    width:25px !important;
+    height:25px;
+    font-size:1.5rem;
+    text-align: center;
+}
+
+.arabic-letter {
+    font-size: 2rem;
+}
+
+.selected-char {
+    color:red;
+}
+
+.additional-char {
+    display: inline-block;
+    margin: 5px 5px 5px 0;
+    padding: 2px 5px;
+    border-radius: 3px;
+  }
+
+  .additional-char-close {
+    border:0px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  .additional-char-close:hover {
+    border:0px;
+    cursor: pointer;
+    color:white;
+    background-color: black;
+  }
+
+  .character-add-button {
+    font-size:1.5rem;
+  }
+
+  .char-options {
+    margin-top: 10px;
+    border:1px solid #ccc;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:25px;
+  }
+  
+  .char-options h4 {
+    margin: 0 0 5px;
+  }
+  
+  .alternative-chars {
+    display: flex;
+    justify-content: center; /* Horizontally centers the children */
+    align-items: center; /* Vertically centers the children */
+    margin: auto;
+    flex-direction: row; /* Ensures the children are aligned in a row */
+  }
+
+  .alternative-chars label {
+    justify-content: center; /* Centers content horizontally */
+    align-items: center; /* Centers content vertically */
+    width: 25px;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 1.5rem;
+    border: 1px solid #ccc;
+    vertical-align: middle; /* This is not needed when using Flexbox */
+  }
+  
+  .char-options input[type="text"] {
+    margin: 5px 0;
+  }
+  
+  .char-options button {
+    margin: 5px 5px 5px 0;
+  }

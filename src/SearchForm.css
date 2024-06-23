@@ -1,0 +1,23 @@
+.live-preview-char {
+    font-size: 3rem;
+    cursor: pointer;
+  }
+  
+  .live-preview-char:hover {
+    color: red;
+  }
+  
+.search-input {
+    height:30px;
+    border:1px solid #ccc;
+    padding:5px;
+    border-radius: 5px;
+    text-align: center;
+    font-size:2rem;
+    width:200px;
+  }
+
+  .search-form {
+    width:50%;
+    margin:auto;
+  }
