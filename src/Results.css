@@ -53,10 +53,24 @@
   padding:5px;
 }
 
-  #results {
-    margin-top:25px;
-    width:800px;
-    margin:auto;
-  }
+#results {
+  margin-top: 25px;
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+  padding: 10px;
+}
 
- 
+@media (max-width: 768px) {
+  #results {
+      width: 90%;
+      padding: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  #results {
+      width: 100%;
+      padding: 2px;
+  }
+}

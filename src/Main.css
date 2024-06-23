@@ -1,7 +1,19 @@
 .container {
-    margin:auto;
-    width:1200px;
+    margin: auto;
+    width: 100%;
+    max-width: 1200px;
+}
 
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        width: 100%;
+    }
 }
 
 .main {
