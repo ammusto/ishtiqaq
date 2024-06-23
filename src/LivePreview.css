@@ -1,4 +1,22 @@
 .live-preview {
-    margin: 20px;
+    margin: 0px 30px 0px 30px;
+    direction: rtl;
+
   }
   
+.live-preview-count {
+  position: relative;
+  margin: 0px;
+  padding: 0px;
+}
+
+
+.live-preview-char {
+  font-size: 3rem;
+  cursor: pointer;
+  
+}
+
+.live-preview-char:hover {
+  color: red;
+}

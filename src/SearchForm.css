@@ -1,23 +1,31 @@
-.live-preview-char {
-    font-size: 3rem;
-    cursor: pointer;
-  }
-  
-  .live-preview-char:hover {
-    color: red;
-  }
-  
 .search-input {
-    height:30px;
-    border:1px solid #ccc;
-    padding:5px;
-    border-radius: 5px;
-    text-align: center;
-    font-size:2rem;
-    width:200px;
-  }
+  height: 30px;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 2rem;
+  width: 200px;
+}
 
-  .search-form {
-    width:50%;
-    margin:auto;
-  }
+.search-form {
+  width: 50%;
+  margin: auto;
+}
+
+.search-button {
+  font-size: 1rem;
+  padding: 5px;
+  width: 200px;
+  margin-top:20px;
+}
+
+.search-button:disabled:hover {
+  background-color: #ccc;
+  color: #999;
+  cursor: default;
+}
+
+.search-button:disabled {
+  color:#999;
+}

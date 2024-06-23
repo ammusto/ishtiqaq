@@ -21,24 +21,33 @@ const findCharacterGroup = (char) => {
   return null;
 };
 
-const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoResults }) => {
-  const [selectedChar, setSelectedChar] = useState(null);
+const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoResults, handleSearchExecuted, setLoading }) => {
+  const [selectedCharIndex, setSelectedCharIndex] = useState(null);
   const [charOptions, setCharOptions] = useState({});
   const [additionalChars, setAdditionalChars] = useState('');
+  const arabicPattern = /[\u0600-\u06FF\u0750-\u077F]/;
+
+  console.count("SearchForm")
 
   useEffect(() => {
     setCharOptions({});
-    setSelectedChar(null);
+    setSelectedCharIndex(null);
   }, [query]);
 
   const handleInputChange = (e) => {
-    setQuery(e.target.value);
+    const value = e.target.value;
+    if (arabicPattern.test(value) || value === "") {
+      setQuery(value);
+    }
   };
+  
 
   const handleSearchClick = () => {
+    setSelectedCharIndex(null);
     setCurrentPage(1);
     setResults([]);
     setNoResults(false);
+    setLoading(true); 
     if (query) {
       searchWords(query);
     }
@@ -46,17 +55,19 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
 
   const searchWords = (pattern) => {
     const startingChars = new Set();
-    pattern.split('').forEach(char => {
-      if (charOptions[char] && charOptions[char].checkedOptions.length) {
-        charOptions[char].checkedOptions.forEach(opt => startingChars.add(opt));
+    pattern.split('').forEach((char, index) => {
+      const optionsKey = `${char}-${index}`;
+      if (charOptions[optionsKey] && charOptions[optionsKey].checkedOptions.length) {
+        charOptions[optionsKey].checkedOptions.forEach(opt => startingChars.add(opt));
       } else {
         startingChars.add(char);
       }
     });
 
-    let regexPattern = pattern.split('').map(char => {
-      if (charOptions[char]) {
-        const selectedOptions = charOptions[char].checkedOptions.join('') + charOptions[char].additionalCharsList.join('');
+    let regexPattern = pattern.split('').map((char, index) => {
+      const optionsKey = `${char}-${index}`;
+      if (charOptions[optionsKey]) {
+        const selectedOptions = charOptions[optionsKey].checkedOptions.join('') + charOptions[optionsKey].additionalCharsList.join('');
         return `[${selectedOptions}]`;
       }
       return char;
@@ -92,62 +103,69 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
           return [];
         });
     }))
-    .then(resultsArrays => {
-      const allResults = resultsArrays.flat();
-      setResults(allResults);
-      if (allResults.length === 0) {
+      .then(resultsArrays => {
+        const allResults = resultsArrays.flat();
+        setResults(allResults);
+        setLoading(false);
+        handleSearchExecuted();
+        if (allResults.length === 0) {
+          setNoResults(true);
+        }
+      })
+      .catch(error => {
+        console.error('Error processing search results', error);
+        setLoading(false); 
+        handleSearchExecuted(); 
         setNoResults(true);
-      }
-    })
-    .catch(error => {
-      console.error('Error processing search results', error);
-      setNoResults(true);
-    });
+      });
   };
 
-  const handleCharClick = (char) => {
+  const handleCharClick = (char, index) => {
+    const optionsKey = `${char}-${index}`;
     const group = findCharacterGroup(char);
     if (group) {
-      if (!charOptions[char]) {
-        setCharOptions({
-          ...charOptions,
-          [char]: {
-            options: [char, ...group.filter(c => c !== char)],
-            checkedOptions: [char],
+      if (!charOptions[optionsKey]) {
+        setCharOptions(prev => ({
+          ...prev,
+          [optionsKey]: {
+            options: group.filter(c => c !== char),
+            checkedOptions: [char], 
             additionalCharsList: []
           }
-        });
+        }));
       }
     } else {
-      if (!charOptions[char]) {
-        setCharOptions({
-          ...charOptions,
-          [char]: {
+      if (!charOptions[optionsKey]) {
+        setCharOptions(prev => ({
+          ...prev,
+          [optionsKey]: {
             options: [],
             checkedOptions: [],
             additionalCharsList: []
           }
-        });
+        }));
       }
     }
-    setSelectedChar(char);
+    setSelectedCharIndex(optionsKey);
   };
 
   const handleSelectAll = () => {
+    const options = charOptions[selectedCharIndex];
     setCharOptions({
       ...charOptions,
-      [selectedChar]: {
-        ...charOptions[selectedChar],
-        checkedOptions: [...charOptions[selectedChar].options]
+      [selectedCharIndex]: {
+        ...options,
+        checkedOptions: [...options.options]
       }
     });
   };
 
   const handleRemoveAll = () => {
+    const options = charOptions[selectedCharIndex];
     setCharOptions({
       ...charOptions,
-      [selectedChar]: {
-        ...charOptions[selectedChar],
+      [selectedCharIndex]: {
+        ...options,
         checkedOptions: []
       }
     });
@@ -155,7 +173,7 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
 
   const handleOptionChange = (e) => {
     const { value, checked } = e.target;
-    const options = charOptions[selectedChar];
+    const options = charOptions[selectedCharIndex];
     if (checked) {
       options.checkedOptions = [...options.checkedOptions, value];
     } else {
@@ -163,52 +181,61 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
     }
     setCharOptions({
       ...charOptions,
-      [selectedChar]: options
+      [selectedCharIndex]: options
     });
   };
+
   const handleAddChar = () => {
-    if (additionalChars && !charOptions[selectedChar].additionalCharsList.includes(additionalChars)) {
-      const options = charOptions[selectedChar];
+    if (additionalChars && !charOptions[selectedCharIndex].additionalCharsList.includes(additionalChars)) {
+      const options = charOptions[selectedCharIndex];
       options.additionalCharsList.push(additionalChars);
-      options.checkedOptions.push(additionalChars); // Automatically check the new char
+      options.checkedOptions.push(additionalChars);
       setCharOptions({
         ...charOptions,
-        [selectedChar]: options
+        [selectedCharIndex]: options
       });
       setAdditionalChars('');
     }
   };
 
   const handleRemoveAdditionalChar = (char) => {
+    const options = charOptions[selectedCharIndex];
     setCharOptions({
       ...charOptions,
-      [selectedChar]: {
-        ...charOptions[selectedChar],
-        additionalCharsList: charOptions[selectedChar].additionalCharsList.filter(c => c !== char)
+      [selectedCharIndex]: {
+        ...options,
+        additionalCharsList: options.additionalCharsList.filter(c => c !== char)
       }
     });
   };
 
   return (
     <div className='search-form'>
-      <input type="text" className='search-input' value={query} onChange={handleInputChange} placeholder="Search" />
-      <LivePreview query={query} handleCharClick={handleCharClick} />
-      {selectedChar && charOptions[selectedChar] && (
-        <CharacterGroup 
-          charOptions={charOptions} 
-          selectedChar={selectedChar} 
-          handleOptionChange={handleOptionChange} 
-          handleAddChar={handleAddChar} 
-          additionalChars={additionalChars} 
-          setAdditionalChars={setAdditionalChars} 
-          handleRemoveAdditionalChar={handleRemoveAdditionalChar} 
-          handleSelectAll={handleSelectAll} 
-          handleRemoveAll={handleRemoveAll} 
-          setSelectedChar={setSelectedChar} 
+      <input type="text" className='search-input' value={query} onChange={handleInputChange} placeholder="" />
+      <LivePreview
+        query={query}
+        handleCharClick={handleCharClick}
+        charOptions={charOptions}
+        setSelectedCharIndex={setSelectedCharIndex}
+        selectedCharIndex={selectedCharIndex}
+      />
+      {selectedCharIndex != null && charOptions[selectedCharIndex] && (
+        <CharacterGroup
+        arabicPattern={arabicPattern}
+          charOptions={charOptions}
+          selectedCharIndex={selectedCharIndex}
+          handleOptionChange={handleOptionChange}
+          handleAddChar={handleAddChar}
+          additionalChars={additionalChars}
+          setAdditionalChars={setAdditionalChars}
+          handleRemoveAdditionalChar={handleRemoveAdditionalChar}
+          handleSelectAll={handleSelectAll}
+          handleRemoveAll={handleRemoveAll}
+          setSelectedCharIndex={setSelectedCharIndex}
         />
       )}
-            <button onClick={handleSearchClick}>Search</button>
-
+      <button className='search-button' onClick={handleSearchClick} disabled={query.length === 0}
+      >Search</button>
     </div>
   );
 };

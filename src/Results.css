@@ -2,36 +2,61 @@
     display: flex;
     align-items: stretch;
     width: 100%;
+    border-bottom:1px solid #ccc;
   }
   
   .word-result {
     flex: 0 0 20%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 10px;
-    font-size:2rem;
+    font-size: 2rem;
+  }
+
+  .word-result:first-child {
+    width:100%;
+  }
+
+  .alphabetical-result {
+    margin-top:20px;
+    width:100%;
+    font-size:1rem;
   }
   
   .root-result-list {
+    height:100%;
     flex: 1;
     display: flex;
     flex-wrap: wrap;
-    align-content: flex-start; /* Adjust to start the content at the top */
+    align-content: flex-start;
     padding: 10px;
   }
   
   .root-result {
     flex: 0 0 20%;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 15px;
     border: 1px solid #ccc;
     margin: 5px;
     border-radius: 10px;
     text-align: center;
+    height:100%;
+  }
+
+  .result-link-container {
+    margin-top:20px;
   }
   
-  .hw-result, .sg-result {
-    margin-top: 10px;
+.result-link {
+  padding:5px;
+}
+
+  #results {
+    margin-top:25px;
+    width:800px;
+    margin:auto;
   }
-  
+
+ 
