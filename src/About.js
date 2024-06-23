@@ -7,7 +7,7 @@ const About = () => {
             <h2>About The Project</h2>
             <p>Work in progress for looking up arabic words and roots, including wildcards. This project utilizes
                 indices from <a href="https://www.ejtaal.net">ejtaal.net</a> as well as a <a href="https://github.com/alsaydi/root-ext-service/blob/main/data/word-root-table.txt">flatfile database</a> of
-                 arabic words and their roots collected by <a href="https://github.com/alsaydi">Abdalaziz Alsaydi</a></p>
+                 arabic words and their roots collected by <a href="https://github.com/alsaydi">Abdalaziz Alsaydi</a>. This project was inspired by <a href="https://www.lexiqamus.com/en">LexiQamus.</a></p>
             <h2>How to Use</h2>
             <p>Type in the term you are trying to look up, you can use * to represent a single character wildcard.
                 If you want to limit your search to include just a specific character or set of characters, you can click on the character in the "preview" that appears that you want to provide alternatives for.
@@ -16,7 +16,7 @@ const About = () => {
                 <img src={`${process.env.PUBLIC_URL}/example.png`} alt="Example" />
                 <p>Currently, this tool only includes Hans Wehr and Steingass dictionaries, and there are links for each of these in the root results list that will bring to ejtaal.net and the appropriate page.
                 For some words, it is more beneficial to look them up alphabetically, so underneath each lemma on the left side of the search results you will find links with an (a) next to them, and these will look up the
-                term alphabetically</p>
+                term alphabetically.</p>
             <h2>To-Do List</h2>
             <ul>
                 <li>Add Lane's Lexicon and Hava</li>
