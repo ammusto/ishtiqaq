@@ -1,5 +1,21 @@
 .about {
-    width:600px;
-    margin:auto;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
     text-align: left;
+    padding: 10px;
+}
+
+@media (max-width: 768px) {
+    .about {
+        width: 90%;
+        padding: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .about {
+        width: 100%;
+        padding: 2px;
+    }
 }
