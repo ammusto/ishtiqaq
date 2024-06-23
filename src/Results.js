@@ -24,9 +24,9 @@ const Results = ({ currentResults, hwIndex, sgIndex, query, noResults }) => {
               {rootList.map((root, rIdx) => (
                 <div key={rIdx} className='root-result'>
                   <strong>Root:</strong> {root}
-                  <div className='hw-result'><a href={DataLoader.findPageImage(root, 'hw', hwIndex)} target="_blank" rel="noopener noreferrer">HW</a>/<a href={DataLoader.findPageImage(query, 'hw', hwIndex)} target="_blank">HW(a)</a></div>
+                  <div className='hw-result'><a href={DataLoader.findPageImage(root, 'hw', hwIndex)} target="_blank" rel="noopener noreferrer">HW</a>/<a href={DataLoader.findPageImage(query, 'hw', hwIndex)} target="_blank" rel="noopener noreferrer">HW(a)</a></div>
 
-                  <div className='sg-result'><a href={DataLoader.findPageImage(root, 'sg', sgIndex)} target="_blank" rel="noopener noreferrer">SG</a>/<a href={DataLoader.findPageImage(query, 'sg', sgIndex)} target="_blank">SG(a)</a></div>
+                  <div className='sg-result'><a href={DataLoader.findPageImage(root, 'sg', sgIndex)} target="_blank" rel="noopener noreferrer">SG</a>/<a href={DataLoader.findPageImage(query, 'sg', sgIndex)} target="_blank" rel="noopener noreferrer">SG(a)</a></div>
                 </div>
               ))}
             </div>
