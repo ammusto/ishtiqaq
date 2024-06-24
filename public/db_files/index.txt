@@ -1,8 +1,8 @@
 db_files\dbfile_1.txt,ءدم,أحدتما
 db_files\dbfile_2.txt,أحدتن,أشحطن
 db_files\dbfile_3.txt,أشحطنا,ألبكوا
-db_files\dbfile_4.txt,ألبكي,إخاختين
-db_files\dbfile_5.txt,إخاخين,ائتيابان
+db_files\dbfile_4.txt,ألبكي,اخاختين
+db_files\dbfile_5.txt,اخاخين,ائتيابان
 db_files\dbfile_6.txt,ائتيابة,اخففي
 db_files\dbfile_7.txt,اخفق,استرعافتان
 db_files\dbfile_8.txt,استرعافتين,اصحني

@@ -54,71 +54,81 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
   };
 
   const searchWords = (pattern) => {
+    const arabicCharVariants = {
+        'آ': '[آاأإ]',
+        'ا': '[آاأإ]',
+        'أ': '[آاأإ]',
+        'إ': '[آاأإ]',
+        'ة': 'ة?'
+
+    };
+
     const startingChars = new Set();
     pattern.split('').forEach((char, index) => {
-      const optionsKey = `${char}-${index}`;
-      if (charOptions[optionsKey] && charOptions[optionsKey].checkedOptions.length) {
-        charOptions[optionsKey].checkedOptions.forEach(opt => startingChars.add(opt));
-      } else {
-        startingChars.add(char);
-      }
+        const optionsKey = `${char}-${index}`;
+        if (charOptions[optionsKey] && charOptions[optionsKey].checkedOptions.length) {
+            charOptions[optionsKey].checkedOptions.forEach(opt => startingChars.add(opt));
+        } else {
+            startingChars.add(char);
+        }
     });
 
     let regexPattern = pattern.split('').map((char, index) => {
-      const optionsKey = `${char}-${index}`;
-      if (charOptions[optionsKey]) {
-        const selectedOptions = charOptions[optionsKey].checkedOptions.join('') + charOptions[optionsKey].additionalCharsList.join('');
-        return `[${selectedOptions}]`;
-      }
-      return char;
+        const optionsKey = `${char}-${index}`;
+        if (charOptions[optionsKey]) {
+            const selectedOptions = charOptions[optionsKey].checkedOptions.join('') + charOptions[optionsKey].additionalCharsList.join('');
+            return `[${selectedOptions}]`;
+        } else {
+            return arabicCharVariants[char] || char;
+        }
     }).join('');
 
     regexPattern = new RegExp('^' + regexPattern.replace(/\*/g, '.') + '$', 'i');
 
     let filesToSearch = index.filter(entry => {
-      const minWord = entry.firstWord.replace(/\*/g, '');
-      const maxWord = entry.lastWord.replace(/\*/g, '');
-      const minInitial = minWord.charAt(0);
-      const maxInitial = maxWord.charAt(0);
+        const minWord = entry.firstWord.replace(/\*/g, '');
+        const maxWord = entry.lastWord.replace(/\*/g, '');
+        const minInitial = minWord.charAt(0);
+        const maxInitial = maxWord.charAt(0);
 
-      return Array.from(startingChars).some(char => char >= minInitial && char <= maxInitial);
+        return Array.from(startingChars).some(char => char >= minInitial && char <= maxInitial);
     });
 
     Promise.all(filesToSearch.map(entry => {
-      const filePath = `${process.env.PUBLIC_URL}/${entry.file}`;
-      return fetch(filePath)
-        .then(response => response.text())
-        .then(data => {
-          const words = data.trim().split('\n');
-          const matchedWords = words.filter(line => {
-            const word = line.split('#')[0];
-            const isMatch = regexPattern.test(word);
-            return isMatch;
-          });
+        const filePath = `${process.env.PUBLIC_URL}/${entry.file}`;
+        return fetch(filePath)
+            .then(response => response.text())
+            .then(data => {
+                const words = data.trim().split('\n');
+                const matchedWords = words.filter(line => {
+                    const word = line.split('#')[0];
+                    const isMatch = regexPattern.test(word);
+                    return isMatch;
+                });
 
-          return matchedWords;
-        })
-        .catch(error => {
-          console.error(`Error searching in file: ${filePath}`, error);
-          return [];
-        });
+                return matchedWords;
+            })
+            .catch(error => {
+                console.error(`Error searching in file: ${filePath}`, error);
+                return [];
+            });
     }))
-      .then(resultsArrays => {
+    .then(resultsArrays => {
         const allResults = resultsArrays.flat();
         setResults(allResults);
         setLoading(false);
         handleSearchExecuted();
         if (allResults.length === 0) {
-          setNoResults(true);
+            setNoResults(true);
         }
-      })
-      .catch(error => {
+    })
+    .catch(error => {
         console.error('Error processing search results', error);
-        setLoading(false); 
-        handleSearchExecuted(); 
+        setLoading(false);
+        handleSearchExecuted();
         setNoResults(true);
-      });
-  };
+    });
+};
 
   const handleCharClick = (char, index) => {
     const optionsKey = `${char}-${index}`;
