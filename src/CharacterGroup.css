@@ -5,11 +5,10 @@
   text-align: center;
   margin-bottom: 0px !important;
   border: 1px solid #ccc;
-  border-radius: 5px;
 }
 
 .close-button {
-  margin-left:25px !important;
+  margin-left:10px !important;
 }
 
 .arabic-letter {
@@ -27,19 +26,6 @@
   border-radius: 3px;
 }
 
-.additional-char-close {
-  border: 0px;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.additional-char-close:hover {
-  border: 0px;
-  cursor: pointer;
-  color: white;
-  background-color: black;
-}
-
 .char-options {
   border-radius: 20px;
   /* margin-top: 20px; */
@@ -50,20 +36,14 @@
 }
 
 .add-char-container {
-  padding: 5px;
   height: 75px;
   margin-left: 5px !important;
-
 }
 
 .add-char-button {
   display: block;
   font-size: 1.5rem;
-  margin: 0px !important;
   min-height: 20px !important;
-  margin: 0px !important;
-
-
 }
 
 .add-char-button:hover {
@@ -72,10 +52,8 @@
 }
 
 .alternative-chars {
-  display: flex;
   justify-content: center;
   align-items: center;
-  margin: auto;
   flex-direction: row;
   direction: rtl;
 }
@@ -83,8 +61,6 @@
 .alternative-chars label {
   width: 25px;
   height: 75px;
-  padding: 5px;
-  border-radius: 5px;
   font-size: 1.5rem;
   vertical-align: middle;
   cursor: pointer;
@@ -92,9 +68,7 @@
 
 .alternative-chars label input[type=checkbox] {
   cursor: pointer;
-
 }
-
 
 .alternative-chars label:hover {
   background-color: #e2e2e2;

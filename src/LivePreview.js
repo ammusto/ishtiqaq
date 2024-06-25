@@ -3,6 +3,7 @@ import './LivePreview.css';
 
 const LivePreview = memo(({ query, handleCharClick, charOptions, setSelectedCharIndex, selectedCharIndex }) => {
   const handleClick = useCallback((char, index) => {
+    if (char === '*') return; // Prevent action if the character is an asterisk
     const optionsKey = `${char}-${index}`;
     handleCharClick(char, index);
     setSelectedCharIndex(optionsKey);
@@ -21,7 +22,7 @@ const LivePreview = memo(({ query, handleCharClick, charOptions, setSelectedChar
             >
               {char}
             </span>
-            <span className="live-preview-count">
+            <span className="live-preview-count m0">
               {additionalCount > 0 ? ` (${additionalCount + 1})` : ''}
             </span>
           </span>

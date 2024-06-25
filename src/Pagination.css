@@ -1,0 +1,40 @@
+.pagination button {
+    margin:5px;
+}
+
+.pages-text {
+    padding-right:5px;
+}
+
+.current-page {
+    font-weight:bold;
+    display: inline-block;
+    width:35px;
+}
+
+.pagination {
+    margin-top:10px;
+    padding:20px;
+    border-top:1px solid #ccc;
+  }
+
+
+
+.pagination-nav-container {
+    display:flex;
+    gap:20px;
+    justify-content: center;
+}
+
+.pagination-nav-container button {
+    max-width:200px;
+    flex: 1 1 calc(50% - 5px);
+}
+
+.pagination-nav-container button:disabled {
+    color:#999;
+}
+.pagination-nav-container button:disabled:hover {
+    background-color:#ccc;
+    cursor: default;
+}

@@ -32,9 +32,7 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
   const [prefixFlag, setPrefixFlag] = useState('');
   const [suffixFlag, setSuffixFlag] = useState('');
 
-  const arabicPattern = useMemo(() => /[\u0600-\u06FF\u0750-\u077F]/, []);
-
-
+  const arabicPattern = useMemo(() => /^[\u0600-\u06FF\u0750-\u077F*]*$/, []);
 
   const handleAlifCheck = (e) => {
     setAlifFlag(e.target.checked)
@@ -49,8 +47,6 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
   const handleSuffixCheck = (e) => {
     setSuffixFlag(e.target.checked)
   }
-
-
 
   const searchWords = useCallback((pattern) => {
     setCharOptions(currentCharOptions => {
@@ -248,10 +244,11 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
       ...charOptions,
       [selectedCharIndex]: {
         ...options,
-        checkedOptions: []
+        checkedOptions: options.checkedOptions.slice(0, 1)
       }
     });
   }, [selectedCharIndex, charOptions]);
+  
 
   const handleAddChar = useCallback(() => {
     if (additionalChars && !charOptions[selectedCharIndex].additionalCharsList.includes(additionalChars)) {
@@ -281,19 +278,20 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
     const value = e.target.value;
     if (arabicPattern.test(value) || value === "") {
       setQuery(value);
-      handleRemoveAll();
-
+    } else {
+      const filteredValue = value.split('').filter(char => arabicPattern.test(char)).join('');
+      setQuery(filteredValue);
     }
-  }, [setQuery, arabicPattern, handleRemoveAll]);
+  }, [setQuery, arabicPattern]);
 
   return (
-    <div className='search-form'>
+    <div className='search-form m-auto'>
       <input
         type="text"
-        className='search-input arabic-font'
+        className='search-input arabic-font p5 br5'
         value={query}
         onChange={handleInputChange}
-        onKeyDown={handleKeyPress} // Add this line to handle Enter key
+        onKeyDown={handleKeyPress}
         placeholder=""
       />
       <div className='normalization-container'>
@@ -354,7 +352,7 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
 
         />
       )}
-      <button className='search-button' onClick={handleSearchClick} disabled={query.length === 0}>Search</button>
+      <button className='search-button p5' onClick={handleSearchClick} disabled={query.length === 0}>Search</button>
     </div>
   );
 };

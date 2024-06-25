@@ -1,5 +1,5 @@
 const DataLoader = {
-  findPageImage: (root, dictionary, indexData) => {
+  findPage: (root, dictionary, indexData) => {
     if (typeof root !== 'string') {
       console.error('Invalid root: Expected a string', root);
       return '#';
@@ -27,7 +27,7 @@ const DataLoader = {
       const comparison = normalizedRoot.localeCompare(sortedEntries[mid][0]);
 
       if (comparison === 0) {
-        return generateImagePath(sortedEntries[mid][1], dictionary);
+        return getPage(sortedEntries[mid][1], dictionary);
       } else if (comparison < 0) {
         right = mid - 1;
       } else {
@@ -37,7 +37,7 @@ const DataLoader = {
 
     // if no exact match is found, use the closest entry
     const page = sortedEntries[left] ? sortedEntries[left][1] : sortedEntries[sortedEntries.length - 1][1];
-    return generateImagePath(page, dictionary);
+    return getPage(page, dictionary);
   },
 
   findDefinition: (root, indexData) => {
@@ -63,14 +63,14 @@ const DataLoader = {
     const matchingRoot = Object.keys(indexData).find(key => rootRegex.test(key));
     const definitions = indexData[matchingRoot];
     if (!definitions) {
-      return ['No Quick Definition Found. Look at Steingass, Hava, or Lane.']; 
+      return ['No Quick Definition Found. Check dictionaries below, especially Steingass and Hava.']; 
     }
 
     return definitions.map(definition => definition.trim());
   }
 };
 
-function generateImagePath(page, dictionary) {
+function getPage(page, dictionary) {
   return `${page.toString().padStart(4, '0')}`;
 }
 

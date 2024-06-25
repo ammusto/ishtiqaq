@@ -1,17 +1,81 @@
+html {
+  font-size:15px !important;
+
+}
 body {
-  margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-y: scroll;
 }
+
+div, nav{
+  box-sizing: border-box;
+}
+
+a {
+  font-size:1rem !important;
+}
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
+ul {
+  margin:0px !important;
+  padding: 0;
+  list-style-type: disc;
+  text-align: left;
+  padding-left: 20px;
+}
+
+button {
+  background-color: #ccc;
+  color: black;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  min-height: 35px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+button:hover {
+  background-color: #333;
+  color: white;
+}
+
+p {
+  line-height:1.5rem;
+}
+
+.m0 {
+  margin: 0px !important;
+}
+
+.m-auto {
+  margin:auto;
+}
+
+.p10 {
+  padding: 10px;
+}
+
+.p5 {
+  padding: 5px;
+}
+
+.br5 {
+  border-radius: 5px;
+}
+
+.flex {
+  display: flex;
+}
 .App {
   text-align: center;
 }
@@ -27,29 +91,7 @@ code {
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap');
 
@@ -58,5 +100,66 @@ code {
 }
 
 .large-font {
-  font-size:1.75rem;
+  font-size:1.5rem;
 }
+
+.med-font {
+  font-size:1.2rem;
+  line-height:1rem;
+}
+
+.main-link {
+  color: black;
+  font-size:2rem !important;
+  text-decoration: none;
+}
+
+.container {
+  margin: auto;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.main {
+  text-align: center;
+  padding-bottom:100px;
+}
+
+.link-button {
+  background-color: transparent;
+  border:0px;
+  cursor: pointer;
+}
+
+.link-button:hover {
+text-decoration: underline;
+}
+
+.navbar {
+  overflow: hidden;
+  margin-bottom:20px;
+}
+
+.nav-links {
+  list-style-type: none;
+  padding: 0;
+  justify-content: center;
+}
+
+.nav-links li {
+  float: left;
+  padding:0px 10px 0px 10px
+}
+
+.nav-links li a {
+  display: block;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+}
+
+.nav-links li a:hover {
+  color: black;
+  text-decoration: underline;
+}
+

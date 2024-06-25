@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import SearchForm from './SearchForm';
 import Results from './Results';
 import About from './About';
-import './Main.css';
+import HowTo from './HowTo';
+import Pagination from './Pagination';
 
 const App = () => {
   const [query, setQuery] = useState('');
@@ -17,7 +18,7 @@ const App = () => {
   const [haIndex, setHaIndex] = useState({});
   const [rootDefinitionList, setRootDefinitionList] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
-  const resultsPerPage = useMemo(() => 5, []);
+  const resultsPerPage = useMemo(() => 4, []);
   const [noResults, setNoResults] = useState(false);
   const [searchExecuted, setSearchExecuted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -72,12 +73,15 @@ const App = () => {
 
   }, [loadIndex, loadDefinitions]);
 
-
-
   const indexOfLastResult = currentPage * resultsPerPage;
   const indexOfFirstResult = indexOfLastResult - resultsPerPage;
   const currentResults = useMemo(() => results.slice(indexOfFirstResult, indexOfLastResult), [results, indexOfFirstResult, indexOfLastResult]);
   const totalPages = useMemo(() => Math.ceil(results.length / resultsPerPage), [results, resultsPerPage]);
+
+  const handleSearchExecuted = useCallback(() => {
+    setSearchExecuted(true);
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
     const handleKeyPress = (event) => {
@@ -94,42 +98,17 @@ const App = () => {
     };
   }, [currentPage, totalPages]);
 
-  const handlePageChange = useCallback((page) => {
-    setCurrentPage(page);
-  }, []);
-
-  const handleSearchExecuted = useCallback(() => {
-    setSearchExecuted(true);
-    setLoading(false);
-  }, []);
-
-  const pagination = useMemo(() => {
-    if (results.length > resultsPerPage) {
-      return (
-        <div className="pagination">
-          <span className='pages-text'>Pages:</span>
-          {[...Array(totalPages).keys()].map(page => (
-            page + 1 === currentPage ? (
-              <span key={page} className="current-page">{page + 1}</span>
-            ) : (
-              <button key={page} onClick={() => handlePageChange(page + 1)}>{page + 1}</button>
-            )
-          ))}
-          <div>{results.length} Results</div>
-        </div>
-      );
-    }
-  }, [totalPages, currentPage, results.length, resultsPerPage, handlePageChange]);
-
   return (
     <Router>
       <div className='container'>
         <div className="main">
-          <h1>Ishtiqāq</h1>
+          <h1><a href="http://ishtiqaq.pages.dev" className='main-link'>Ishtiqāq</a></h1>
           <nav className="navbar">
-            <ul className="nav-links">
+            <ul className="nav-links flex m0">
               <li><Link to="/">Search</Link></li>
               <li><Link to="/about">About</Link></li>
+              <li><Link to="/howto">How To Use</Link></li>
+              <li><a href="https://github.com/ammusto/ishtiqaq" target="_blank" rel="noopener noreferrer">GitHub</a></li>
             </ul>
           </nav>
           <Routes>
@@ -159,10 +138,18 @@ const App = () => {
                   searchExecuted={searchExecuted}
                   loading={loading}
                 />
-                {pagination}
+                <Pagination
+                  totalPages={totalPages}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                  resultsLength={results.length}
+                  resultsPerPage={resultsPerPage}
+                />
               </>
             } />
             <Route path="/about" element={<About />} />
+            <Route path="/howto" element={<HowTo />} />
+
           </Routes>
         </div>
       </div>
