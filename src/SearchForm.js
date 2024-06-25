@@ -123,9 +123,10 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
           }
         }
       }
+      console.log(regexPattern)
 
-      regexPattern = new RegExp('^' + regexPattern.replace(/\*/g, '.') + '$', 'i');
-
+      regexPattern = new RegExp('^' + regexPattern.replace(/\[\*\]/g, '.') + '$', 'i');
+      console.log(regexPattern)
       let filesToSearch = index.filter(entry => {
         const minWord = entry.firstWord.replace(/\*/g, '');
         const maxWord = entry.lastWord.replace(/\*/g, '');

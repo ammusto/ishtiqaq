@@ -15,6 +15,7 @@ const App = () => {
   const [hwIndex, setHwIndex] = useState({});
   const [sgIndex, setSgIndex] = useState({});
   const [haIndex, setHaIndex] = useState({});
+  const [rootDefinitionList, setRootDefinitionList] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const resultsPerPage = useMemo(() => 5, []);
   const [noResults, setNoResults] = useState(false);
@@ -36,6 +37,21 @@ const App = () => {
       });
   }, []);
 
+  const loadDefinitions = useCallback((filePath, setState) => {
+    fetch(filePath)
+      .then(response => response.text())
+      .then(text => {
+        const parsedDefinitions = text.split('\n').reduce((acc, line) => {
+          const [rootPart, definitionsPart] = line.split('~', 2);
+          const root = rootPart.trim();
+          const definitions = definitionsPart.split(';').map(definition => definition.trim());
+          acc[root] = definitions;
+          return acc;
+        }, {});
+        setState(parsedDefinitions);
+      });
+  }, []);
+  
   useEffect(() => {
     fetch(`${process.env.PUBLIC_URL}/db_files/index.txt`)
       .then(response => response.text())
@@ -50,16 +66,33 @@ const App = () => {
     loadIndex(`${process.env.PUBLIC_URL}/indices/hw.txt`, setHwIndex);
     loadIndex(`${process.env.PUBLIC_URL}/indices/sg.txt`, setSgIndex);
     loadIndex(`${process.env.PUBLIC_URL}/indices/ll.txt`, setLlIndex);
-    loadIndex(`${process.env.PUBLIC_URL}/indices/ls.txt`, setLsIndex)
-    loadIndex(`${process.env.PUBLIC_URL}/indices/ha.txt`, setHaIndex)
+    loadIndex(`${process.env.PUBLIC_URL}/indices/ls.txt`, setLsIndex);
+    loadIndex(`${process.env.PUBLIC_URL}/indices/ha.txt`, setHaIndex);
+    loadDefinitions(`${process.env.PUBLIC_URL}/db_files/root_definitions.txt`, setRootDefinitionList);
+
+  }, [loadIndex, loadDefinitions]);
 
 
-  }, [loadIndex]);
 
   const indexOfLastResult = currentPage * resultsPerPage;
   const indexOfFirstResult = indexOfLastResult - resultsPerPage;
   const currentResults = useMemo(() => results.slice(indexOfFirstResult, indexOfLastResult), [results, indexOfFirstResult, indexOfLastResult]);
   const totalPages = useMemo(() => Math.ceil(results.length / resultsPerPage), [results, resultsPerPage]);
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === 'ArrowLeft' && currentPage > 1) {
+        setCurrentPage(prevPage => prevPage - 1);
+      } else if (event.key === 'ArrowRight' && currentPage < totalPages) {
+        setCurrentPage(prevPage => prevPage + 1);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [currentPage, totalPages]);
 
   const handlePageChange = useCallback((page) => {
     setCurrentPage(page);
@@ -121,6 +154,7 @@ const App = () => {
                   hwIndex={hwIndex}
                   sgIndex={sgIndex}
                   haIndex={haIndex}
+                  rootDefinitionList={rootDefinitionList}
                   noResults={noResults}
                   searchExecuted={searchExecuted}
                   loading={loading}
