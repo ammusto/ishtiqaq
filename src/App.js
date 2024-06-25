@@ -17,22 +17,6 @@ const App = () => {
   const [noResults, setNoResults] = useState(false);
   const [searchExecuted, setSearchExecuted] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    fetch(`${process.env.PUBLIC_URL}/db_files/index.txt`)
-      .then(response => response.text())
-      .then(text => {
-        const parsedIndex = text.trim().split('\n').map(line => {
-          const [file, firstWord, lastWord] = line.split(',');
-          return { file, firstWord, lastWord };
-        });
-        setIndex(parsedIndex);
-      });
-
-    loadIndex(`${process.env.PUBLIC_URL}/indices/hw.txt`, setHwIndex);
-    loadIndex(`${process.env.PUBLIC_URL}/indices/sg.txt`, setSgIndex);
-  });
-
   const loadIndex = useCallback((filePath, setState) => {
     fetch(filePath)
       .then(response => response.text())
@@ -47,6 +31,21 @@ const App = () => {
         setState(parsedIndex);
       });
   }, []);
+
+  useEffect(() => {
+    fetch(`${process.env.PUBLIC_URL}/db_files/index.txt`)
+      .then(response => response.text())
+      .then(text => {
+        const parsedIndex = text.trim().split('\n').map(line => {
+          const [file, firstWord, lastWord] = line.split(',');
+          return { file, firstWord, lastWord };
+        });
+        setIndex(parsedIndex);
+      });
+
+    loadIndex(`${process.env.PUBLIC_URL}/indices/hw.txt`, setHwIndex);
+    loadIndex(`${process.env.PUBLIC_URL}/indices/sg.txt`, setSgIndex);
+  }, [loadIndex]);
 
   const indexOfLastResult = currentPage * resultsPerPage;
   const indexOfFirstResult = indexOfLastResult - resultsPerPage;

@@ -22,6 +22,7 @@ const ResultItem = memo(({ result, hwIndex, sgIndex, queryDisplay }) => {
             <div className='result-link-container'>
               <a className='result-link' href={DataLoader.findPageImage(root, 'hw', hwIndex)} target="_blank" rel="noopener noreferrer">HW</a>/
               <a className='result-link' href={DataLoader.findPageImage(root, 'sg', sgIndex)} target="_blank" rel="noopener noreferrer">SG</a>
+              <a className='result-link' href={DataLoader.findPageImage(root, 'll', sgIndex)} target="_blank" rel="noopener noreferrer">LL</a>
             </div>
           </div>
         ))}
