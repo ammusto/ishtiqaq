@@ -10,13 +10,17 @@ const App = () => {
   const [queryDisplay, setQueryDisplay] = useState('');
   const [results, setResults] = useState([]);
   const [index, setIndex] = useState([]);
+  const [llIndex, setLlIndex] = useState({});
+  const [lsIndex, setLsIndex] = useState({});
   const [hwIndex, setHwIndex] = useState({});
   const [sgIndex, setSgIndex] = useState({});
+  const [haIndex, setHaIndex] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const resultsPerPage = useMemo(() => 5, []);
   const [noResults, setNoResults] = useState(false);
   const [searchExecuted, setSearchExecuted] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const loadIndex = useCallback((filePath, setState) => {
     fetch(filePath)
       .then(response => response.text())
@@ -45,6 +49,11 @@ const App = () => {
 
     loadIndex(`${process.env.PUBLIC_URL}/indices/hw.txt`, setHwIndex);
     loadIndex(`${process.env.PUBLIC_URL}/indices/sg.txt`, setSgIndex);
+    loadIndex(`${process.env.PUBLIC_URL}/indices/ll.txt`, setLlIndex);
+    loadIndex(`${process.env.PUBLIC_URL}/indices/ls.txt`, setLsIndex)
+    loadIndex(`${process.env.PUBLIC_URL}/indices/ha.txt`, setHaIndex)
+
+
   }, [loadIndex]);
 
   const indexOfLastResult = currentPage * resultsPerPage;
@@ -106,9 +115,12 @@ const App = () => {
                 />
                 <Results
                   currentResults={currentResults}
+                  queryDisplay={queryDisplay}
+                  llIndex={llIndex}
+                  lsIndex={lsIndex}
                   hwIndex={hwIndex}
                   sgIndex={sgIndex}
-                  queryDisplay={queryDisplay}
+                  haIndex={haIndex}
                   noResults={noResults}
                   searchExecuted={searchExecuted}
                   loading={loading}

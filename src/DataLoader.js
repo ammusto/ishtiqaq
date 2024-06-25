@@ -1,17 +1,22 @@
 const DataLoader = {
   findPageImage: (root, dictionary, indexData) => {
-    // normalize the root
-    let normalizedRoot = root.replace(/ي$/, 'ى').trim(); // convert final ي to ى
+    if (typeof root !== 'string') {
+      console.error('Invalid root: Expected a string', root);
+      return '#'; // Handle this case appropriately.
+    }
+
+    // Normalize the root
+    let normalizedRoot = root.replace(/ي$/, 'ى').trim(); // Convert final ي to ى
     if (normalizedRoot.length > 1 && normalizedRoot[normalizedRoot.length - 1] === normalizedRoot[normalizedRoot.length - 2]) {
-      normalizedRoot = normalizedRoot.slice(0, -1); // remove the last character if it is the same as the second last character
+      normalizedRoot = normalizedRoot.slice(0, -1); // Remove duplicate last character
     }
 
-    if (Object.keys(indexData).length === 0) {
+    if (!indexData || Object.keys(indexData).length === 0) {
       console.error(`${dictionary} index is empty or not loaded.`);
-      return '#'; // provide a fallback URL or handle this case appropriately.
+      return '#'; // Provide a fallback URL or handle this case appropriately.
     }
 
-    // properly handle entries by trimming any extraneous whitespace
+    // Handle entries by trimming any extraneous whitespace
     const cleanedEntries = Object.entries(indexData).map(([key, value]) => [key.trim(), value]);
     const sortedEntries = cleanedEntries.sort((a, b) => a[0].localeCompare(b[0]));
 
@@ -24,21 +29,14 @@ const DataLoader = {
       }
     }
 
-    // if no match found (shouldn't happen if data is correctly structured), use the last page
+    // If no match is found, use the last page
     page = sortedEntries[sortedEntries.length - 1][1];
     return generateImagePath(page, dictionary);
   }
 };
-  
-  function generateImagePath(page, dictionary) {
-    // const folder = Math.floor(page / 100);
-    // return `${process.env.PUBLIC_URL}/${dictionary}/${folder}/${dictionary}-${page.toString().padStart(4, '0')}.png`;
 
-    if (dictionary === 'hw') {
-      return `https://ejtaal.net/aa/#hw4=${page.toString().padStart(4, '0')}`;
-    } else if (dictionary === 'sg') {
-      return `https://ejtaal.net/aa/#sg=${page.toString().padStart(4, '0')}`;
-    }
+function generateImagePath(page, dictionary) {
+  return `${page.toString().padStart(4, '0')}`;
 }
 
 export default DataLoader;

@@ -34,12 +34,7 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
 
   const arabicPattern = useMemo(() => /[\u0600-\u06FF\u0750-\u077F]/, []);
 
-  const handleInputChange = useCallback((e) => {
-    const value = e.target.value;
-    if (arabicPattern.test(value) || value === "") {
-      setQuery(value);
-    }
-  }, [setQuery, arabicPattern]);
+
 
   const handleAlifCheck = (e) => {
     setAlifFlag(e.target.checked)
@@ -130,7 +125,6 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
       }
 
       regexPattern = new RegExp('^' + regexPattern.replace(/\*/g, '.') + '$', 'i');
-      console.log("regexPattern", regexPattern)
 
       let filesToSearch = index.filter(entry => {
         const minWord = entry.firstWord.replace(/\*/g, '');
@@ -282,12 +276,20 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
     });
   }, [selectedCharIndex, charOptions]);
 
+  const handleInputChange = useCallback((e) => {
+    const value = e.target.value;
+    if (arabicPattern.test(value) || value === "") {
+      setQuery(value);
+      handleRemoveAll();
+
+    }
+  }, [setQuery, arabicPattern, handleRemoveAll]);
 
   return (
     <div className='search-form'>
       <input
         type="text"
-        className='search-input'
+        className='search-input arabic-font'
         value={query}
         onChange={handleInputChange}
         onKeyDown={handleKeyPress} // Add this line to handle Enter key

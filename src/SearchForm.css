@@ -1,10 +1,10 @@
 .search-input {
-  height: 30px;
+  height: 50px;
   border: 1px solid #ccc;
   padding: 5px;
   border-radius: 5px;
   text-align: center;
-  font-size: 2rem;
+  font-size: 1.5rem;
   width: 200px;
 }
 
@@ -33,4 +33,11 @@
 .normalization-container {
   margin-top:10px;
   direction: rtl;
+}
+
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap');
+
+.arabic-font {
+    font-family: 'Noto Sans Arabic', sans-serif;
 }
