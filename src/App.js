@@ -31,7 +31,7 @@ const App = () => {
 
     loadIndex(`${process.env.PUBLIC_URL}/indices/hw.txt`, setHwIndex);
     loadIndex(`${process.env.PUBLIC_URL}/indices/sg.txt`, setSgIndex);
-  }, []);
+  }, [loadIndex]);
 
   const loadIndex = useCallback((filePath, setState) => {
     fetch(filePath)
