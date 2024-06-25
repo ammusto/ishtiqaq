@@ -1,20 +1,19 @@
 import React, { memo } from 'react';
 import DataLoader from './DataLoader';
 import './Results.css';
-console.count("Results")
 
-const ResultItem = memo(({ result, hwIndex, sgIndex, query }) => {
+const ResultItem = memo(({ result, hwIndex, sgIndex, queryDisplay }) => {
   const [word, roots] = result.split('#');
   const rootList = roots.split(',');
   return (
     <div className='search-result'>
       <div className='word-result'><div>{word}</div>
-      <div className='alphabetical-result'>
-            <div>
-              <a className='result-link' href={DataLoader.findPageImage(word, 'hw', hwIndex)} target="_blank" rel="noopener noreferrer">HW(a)</a>/
-              <a className='result-link' href={DataLoader.findPageImage(word, 'sg', sgIndex)} target="_blank" rel="noopener noreferrer">SG(a)</a>
-            </div>
+        <div className='alphabetical-result'>
+          <div>
+            <a className='result-link' href={DataLoader.findPageImage(word, 'hw', hwIndex)} target="_blank" rel="noopener noreferrer">HW(a)</a>/
+            <a className='result-link' href={DataLoader.findPageImage(word, 'sg', sgIndex)} target="_blank" rel="noopener noreferrer">SG(a)</a>
           </div>
+        </div>
       </div>
       <div className='root-result-list'>
         {rootList.map((root, rIdx) => (
@@ -31,30 +30,34 @@ const ResultItem = memo(({ result, hwIndex, sgIndex, query }) => {
   );
 });
 
-const Results = memo(({ currentResults, hwIndex, sgIndex, query, noResults, searchExecuted, loading }) => {
+const Results = memo(({ currentResults, hwIndex, sgIndex, queryDisplay, noResults, searchExecuted, loading }) => {
   if (loading) {
     return <p>Loading...</p>;
   }
 
   if (noResults && searchExecuted) {
     return (
-      <div className='search-result'>
-        <div className='word-result'>
-          <div>{query}
+      <div id="results">
+
+        <div className='search-result'>
+          <div className='word-result'>
+            <div>{queryDisplay}
+            </div>
+            <div className='alphabetical-result'>
+              <div>
+                <a className='result-link' href={DataLoader.findPageImage(queryDisplay, 'hw', hwIndex)} target="_blank" rel="noopener noreferrer">HW(a)</a>/
+                <a className='result-link' href={DataLoader.findPageImage(queryDisplay, 'sg', sgIndex)} target="_blank" rel="noopener noreferrer"> SG(a)</a>
+              </div>
+            </div>
           </div>
-          <div className='alphabetical-result'>
-            <div>
-              <a className='result-link' href={DataLoader.findPageImage(query, 'hw', hwIndex)} target="_blank" rel="noopener noreferrer">HW(a)</a>/
-              <a className='result-link' href={DataLoader.findPageImage(query, 'sg', sgIndex)} target="_blank" rel="noopener noreferrer"> SG(a)</a>
+          <div className='root-result-list'>
+            <div className='root-result'>
+              <strong>No Root Found</strong>
             </div>
           </div>
         </div>
-        <div className='root-result-list'>
-          <div className='root-result'>
-            <strong>No Root Found</strong>
-          </div>
-        </div>
       </div>
+
     );
   }
 
@@ -65,7 +68,7 @@ const Results = memo(({ currentResults, hwIndex, sgIndex, query, noResults, sear
   return (
     <div id="results">
       {currentResults.map((result, idx) => (
-        <ResultItem key={idx} result={result} hwIndex={hwIndex} sgIndex={sgIndex} query={query} />
+        <ResultItem key={idx} result={result} hwIndex={hwIndex} sgIndex={sgIndex} queryDisplay={queryDisplay} />
       ))}
     </div>
   );

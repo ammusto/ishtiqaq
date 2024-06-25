@@ -7,7 +7,6 @@ const LivePreview = memo(({ query, handleCharClick, charOptions, setSelectedChar
     handleCharClick(char, index);
     setSelectedCharIndex(optionsKey);
   }, [handleCharClick, setSelectedCharIndex]);
-  console.count("LivePreview")
 
   return (
     <div className="live-preview">

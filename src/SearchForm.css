@@ -29,3 +29,8 @@
 .search-button:disabled {
   color:#999;
 }
+
+.normalization-container {
+  margin-top:10px;
+  direction: rtl;
+}

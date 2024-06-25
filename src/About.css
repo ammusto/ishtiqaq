@@ -19,3 +19,8 @@
         padding: 2px;
     }
 }
+
+.example-image {
+    width:100%;
+    max-width:593px;
+}

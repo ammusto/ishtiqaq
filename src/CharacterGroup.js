@@ -6,12 +6,11 @@ const CharacterGroup = memo(({
 }) => {
   const options = charOptions[selectedCharIndex] || { options: [], checkedOptions: [], additionalCharsList: [] };
 
-  const handleInputChange = useCallback((e) => {    
+  const handleInputChange = useCallback((e) => {
     if (arabicPattern.test(e.target.value) || e.target.value === "") {
       setAdditionalChars(e.target.value);
     }
   }, [setAdditionalChars, arabicPattern]);
-  console.count("CharacterGroup")
 
   const canAddChar = additionalChars && !options.options.includes(additionalChars) && !options.additionalCharsList.includes(additionalChars);
 

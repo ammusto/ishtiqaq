@@ -29,8 +29,6 @@ const DataLoader = {
     return generateImagePath(page, dictionary);
   }
 };
-console.count("DataLoader")
-
   
   function generateImagePath(page, dictionary) {
     // const folder = Math.floor(page / 100);

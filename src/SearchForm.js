@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import './SearchForm.css';
 import CharacterGroup from './CharacterGroup';
 import LivePreview from './LivePreview';
@@ -9,7 +9,9 @@ const characterGroups = {
   'حجخصض': ['ح', 'ج', 'خ', 'ص', 'ض'],
   'بتثني': ['ب', 'ت', 'ث', 'ن', 'ي'],
   'سش': ['س', 'ش'],
-  'طظ': ['ط', 'ظ']
+  'طظ': ['ط', 'ظ'],
+  'هة': ['ه', 'ة'],
+
 };
 
 const findCharacterGroup = (char) => {
@@ -21,116 +23,177 @@ const findCharacterGroup = (char) => {
   return null;
 };
 
-const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoResults, handleSearchExecuted, setLoading }) => {
+const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoResults, handleSearchExecuted, setLoading, setQueryDisplay }) => {
   const [selectedCharIndex, setSelectedCharIndex] = useState(null);
   const [charOptions, setCharOptions] = useState({});
   const [additionalChars, setAdditionalChars] = useState('');
-  const arabicPattern = /[\u0600-\u06FF\u0750-\u077F]/;
+  const [taMarbutaFlag, setTaMarbutaFlag] = useState('True');
+  const [alifFlag, setAlifFlag] = useState('True');
+  const [prefixFlag, setPrefixFlag] = useState('');
+  const [suffixFlag, setSuffixFlag] = useState('');
 
-  console.count("SearchForm")
+  const arabicPattern = useMemo(() => /[\u0600-\u06FF\u0750-\u077F]/, []);
 
-  useEffect(() => {
-    setCharOptions({});
-    setSelectedCharIndex(null);
-  }, [query]);
-
-  const handleInputChange = (e) => {
+  const handleInputChange = useCallback((e) => {
     const value = e.target.value;
     if (arabicPattern.test(value) || value === "") {
       setQuery(value);
     }
-  };
-  
+  }, [setQuery, arabicPattern]);
 
-  const handleSearchClick = () => {
+  const handleAlifCheck = (e) => {
+    setAlifFlag(e.target.checked)
+  }
+  const handleTaMarbutaCheck = (e) => {
+    setTaMarbutaFlag(e.target.checked)
+  }
+
+  const handlePrefixCheck = (e) => {
+    setPrefixFlag(e.target.checked)
+  }
+  const handleSuffixCheck = (e) => {
+    setSuffixFlag(e.target.checked)
+  }
+
+
+
+  const searchWords = useCallback((pattern) => {
+    setCharOptions(currentCharOptions => {
+      const normalizeChar = (char) => {
+        const normalizationMap = {};
+
+        if (alifFlag) {
+          normalizationMap['ا'] = 'آاأإ';
+        }
+        if (taMarbutaFlag) {
+          normalizationMap['ه'] = 'هة';
+          normalizationMap['ة'] = 'هة';
+        }
+
+        return normalizationMap[char] || char;
+      };
+
+      const startingChars = new Set();
+
+      const firstCharKey = `${pattern.charAt(0)}-0`;
+      const firstChars = currentCharOptions[firstCharKey] && currentCharOptions[firstCharKey].checkedOptions.length
+        ? currentCharOptions[firstCharKey].checkedOptions.map(char => normalizeChar(char))
+        : [normalizeChar(pattern.charAt(0))];
+
+      const secondCharKey = `${pattern.charAt(1)}-1`;
+      const secondChars = currentCharOptions[secondCharKey] && currentCharOptions[secondCharKey].checkedOptions.length
+        ? currentCharOptions[secondCharKey].checkedOptions.map(char => normalizeChar(char))
+        : [normalizeChar(pattern.charAt(1))];
+
+      firstChars.forEach(firstChar => {
+        for (let i = 0; i < firstChar.length; i++) {
+          const fc = firstChar[i];
+          secondChars.forEach(secondChar => {
+            for (let j = 0; j < secondChar.length; j++) {
+              const sc = secondChar[j];
+              startingChars.add(fc + sc);
+            }
+          });
+        }
+      });
+
+      const prefixes = ['ف', 'ل', 'و', 'ن', 'ي', 'ت', 'ال', 'ك', 'س'];
+      const suffixes = ['ه', 'ها', 'هم', 'هن', 'هما', 'ني', 'ك', 'كم', 'كما', 'ن', 'نا', 'هة'];
+      
+      let regexPattern = pattern.split('').map((char, index) => {
+        const optionsKey = `${char}-${index}`;
+        if (currentCharOptions[optionsKey]) {
+          const selectedOptions = currentCharOptions[optionsKey].checkedOptions.join('') + currentCharOptions[optionsKey].additionalCharsList.join('');
+          return `[${selectedOptions}]`;
+        }
+        return `[${normalizeChar(char)}]`;
+      }).join('');
+
+      if (prefixFlag) {
+        for (const prefix of prefixes) {
+          const prefixPattern = `[${prefix}]`;
+          if (regexPattern.startsWith(prefixPattern)) {
+            regexPattern = `${prefixPattern}?${regexPattern.slice(prefixPattern.length)}`;
+            break;
+          }
+        }
+      }
+
+      if (suffixFlag) {
+        for (const suffix of suffixes) {
+          const suffixPattern = `[${suffix}]`;
+          if (regexPattern.endsWith(suffixPattern)) {
+            regexPattern = `${regexPattern.slice(0, -suffixPattern.length)}${suffixPattern}?`;
+            break;
+          }
+        }
+      }
+
+      regexPattern = new RegExp('^' + regexPattern.replace(/\*/g, '.') + '$', 'i');
+      console.log("regexPattern", regexPattern)
+
+      let filesToSearch = index.filter(entry => {
+        const minWord = entry.firstWord.replace(/\*/g, '');
+        const maxWord = entry.lastWord.replace(/\*/g, '');
+        const minInitial = minWord.substring(0, 2);
+        const maxInitial = maxWord.substring(0, 2);
+
+        return Array.from(startingChars).some(char => char >= minInitial && char <= maxInitial);
+      });
+
+      Promise.all(filesToSearch.map(async entry => {
+        const filePath = `${process.env.PUBLIC_URL}/${entry.file}`;
+        try {
+          const response = await fetch(filePath);
+          const data = await response.text();
+          const words = data.trim().split('\n');
+          const matchedWords = words.filter(line => {
+            const word = line.split('#')[0];
+            const isMatch = regexPattern.test(word);
+            return isMatch;
+          });
+          return matchedWords;
+        } catch (error) {
+          return [];
+        }
+      }))
+        .then(resultsArrays => {
+          const allResults = resultsArrays.flat();
+          setResults(allResults);
+          setLoading(false);
+          handleSearchExecuted();
+          if (allResults.length === 0) {
+            setNoResults(true);
+          }
+        })
+        .catch(error => {
+          setLoading(false);
+          handleSearchExecuted();
+          setNoResults(true);
+        });
+      return currentCharOptions;
+    });
+  }, [index, setResults, setLoading, handleSearchExecuted, setNoResults, alifFlag, taMarbutaFlag, prefixFlag, suffixFlag]);
+
+  const handleSearchClick = useCallback(() => {
     setSelectedCharIndex(null);
     setCurrentPage(1);
     setResults([]);
     setNoResults(false);
-    setLoading(true); 
+    setLoading(true);
     if (query) {
       searchWords(query);
+      setQueryDisplay(query);
     }
-  };
+  }, [query, setCurrentPage, setResults, setNoResults, setLoading, setQueryDisplay, searchWords]);
 
-  const searchWords = (pattern) => {
-    const arabicCharVariants = {
-        'آ': '[آاأإ]',
-        'ا': '[آاأإ]',
-        'أ': '[آاأإ]',
-        'إ': '[آاأإ]',
-        'ة': 'ة?'
+  const handleKeyPress = useCallback((event) => {
+    if (event.key === 'Enter' && query.length > 0) {
+      handleSearchClick();
+    }
+  }, [handleSearchClick, query.length]);
 
-    };
-
-    const startingChars = new Set();
-    pattern.split('').forEach((char, index) => {
-        const optionsKey = `${char}-${index}`;
-        if (charOptions[optionsKey] && charOptions[optionsKey].checkedOptions.length) {
-            charOptions[optionsKey].checkedOptions.forEach(opt => startingChars.add(opt));
-        } else {
-            startingChars.add(char);
-        }
-    });
-
-    let regexPattern = pattern.split('').map((char, index) => {
-        const optionsKey = `${char}-${index}`;
-        if (charOptions[optionsKey]) {
-            const selectedOptions = charOptions[optionsKey].checkedOptions.join('') + charOptions[optionsKey].additionalCharsList.join('');
-            return `[${selectedOptions}]`;
-        } else {
-            return arabicCharVariants[char] || char;
-        }
-    }).join('');
-
-    regexPattern = new RegExp('^' + regexPattern.replace(/\*/g, '.') + '$', 'i');
-
-    let filesToSearch = index.filter(entry => {
-        const minWord = entry.firstWord.replace(/\*/g, '');
-        const maxWord = entry.lastWord.replace(/\*/g, '');
-        const minInitial = minWord.charAt(0);
-        const maxInitial = maxWord.charAt(0);
-
-        return Array.from(startingChars).some(char => char >= minInitial && char <= maxInitial);
-    });
-
-    Promise.all(filesToSearch.map(entry => {
-        const filePath = `${process.env.PUBLIC_URL}/${entry.file}`;
-        return fetch(filePath)
-            .then(response => response.text())
-            .then(data => {
-                const words = data.trim().split('\n');
-                const matchedWords = words.filter(line => {
-                    const word = line.split('#')[0];
-                    const isMatch = regexPattern.test(word);
-                    return isMatch;
-                });
-
-                return matchedWords;
-            })
-            .catch(error => {
-                console.error(`Error searching in file: ${filePath}`, error);
-                return [];
-            });
-    }))
-    .then(resultsArrays => {
-        const allResults = resultsArrays.flat();
-        setResults(allResults);
-        setLoading(false);
-        handleSearchExecuted();
-        if (allResults.length === 0) {
-            setNoResults(true);
-        }
-    })
-    .catch(error => {
-        console.error('Error processing search results', error);
-        setLoading(false);
-        handleSearchExecuted();
-        setNoResults(true);
-    });
-};
-
-  const handleCharClick = (char, index) => {
+  const handleCharClick = useCallback((char, index) => {
     const optionsKey = `${char}-${index}`;
     const group = findCharacterGroup(char);
     if (group) {
@@ -139,7 +202,7 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
           ...prev,
           [optionsKey]: {
             options: group.filter(c => c !== char),
-            checkedOptions: [char], 
+            checkedOptions: [char],
             additionalCharsList: []
           }
         }));
@@ -157,31 +220,9 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
       }
     }
     setSelectedCharIndex(optionsKey);
-  };
+  }, [charOptions]);
 
-  const handleSelectAll = () => {
-    const options = charOptions[selectedCharIndex];
-    setCharOptions({
-      ...charOptions,
-      [selectedCharIndex]: {
-        ...options,
-        checkedOptions: [...options.options]
-      }
-    });
-  };
-
-  const handleRemoveAll = () => {
-    const options = charOptions[selectedCharIndex];
-    setCharOptions({
-      ...charOptions,
-      [selectedCharIndex]: {
-        ...options,
-        checkedOptions: []
-      }
-    });
-  };
-
-  const handleOptionChange = (e) => {
+  const handleOptionChange = useCallback((e) => {
     const { value, checked } = e.target;
     const options = charOptions[selectedCharIndex];
     if (checked) {
@@ -193,9 +234,31 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
       ...charOptions,
       [selectedCharIndex]: options
     });
-  };
+  }, [selectedCharIndex, charOptions]);
 
-  const handleAddChar = () => {
+  const handleSelectAll = useCallback(() => {
+    const options = charOptions[selectedCharIndex];
+    setCharOptions({
+      ...charOptions,
+      [selectedCharIndex]: {
+        ...options,
+        checkedOptions: [...options.options]
+      }
+    });
+  }, [selectedCharIndex, charOptions]);
+
+  const handleRemoveAll = useCallback(() => {
+    const options = charOptions[selectedCharIndex];
+    setCharOptions({
+      ...charOptions,
+      [selectedCharIndex]: {
+        ...options,
+        checkedOptions: []
+      }
+    });
+  }, [selectedCharIndex, charOptions]);
+
+  const handleAddChar = useCallback(() => {
     if (additionalChars && !charOptions[selectedCharIndex].additionalCharsList.includes(additionalChars)) {
       const options = charOptions[selectedCharIndex];
       options.additionalCharsList.push(additionalChars);
@@ -206,9 +269,9 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
       });
       setAdditionalChars('');
     }
-  };
+  }, [selectedCharIndex, charOptions, additionalChars]);
 
-  const handleRemoveAdditionalChar = (char) => {
+  const handleRemoveAdditionalChar = useCallback((char) => {
     const options = charOptions[selectedCharIndex];
     setCharOptions({
       ...charOptions,
@@ -217,11 +280,54 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
         additionalCharsList: options.additionalCharsList.filter(c => c !== char)
       }
     });
-  };
+  }, [selectedCharIndex, charOptions]);
+
 
   return (
     <div className='search-form'>
-      <input type="text" className='search-input' value={query} onChange={handleInputChange} placeholder="" />
+      <input
+        type="text"
+        className='search-input'
+        value={query}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyPress} // Add this line to handle Enter key
+        placeholder=""
+      />
+      <div className='normalization-container'>
+        <label>
+          ة
+          <input
+            type="checkbox"
+            checked={taMarbutaFlag}
+            onChange={handleTaMarbutaCheck}
+          />
+        </label>
+        <label>
+          ء
+          <input
+            type="checkbox"
+            checked={alifFlag}
+            onChange={handleAlifCheck}
+          />
+        </label>
+         
+        <label>
+          س
+          <input
+            type="checkbox"
+            checked={prefixFlag}
+            onChange={handlePrefixCheck}
+          />
+        </label>
+        <label>
+          ل
+          <input
+            type="checkbox"
+            checked={suffixFlag}
+            onChange={handleSuffixCheck}
+          />
+        </label>
+      </div>
       <LivePreview
         query={query}
         handleCharClick={handleCharClick}
@@ -231,7 +337,7 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
       />
       {selectedCharIndex != null && charOptions[selectedCharIndex] && (
         <CharacterGroup
-        arabicPattern={arabicPattern}
+          arabicPattern={arabicPattern}
           charOptions={charOptions}
           selectedCharIndex={selectedCharIndex}
           handleOptionChange={handleOptionChange}
@@ -242,10 +348,10 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
           handleSelectAll={handleSelectAll}
           handleRemoveAll={handleRemoveAll}
           setSelectedCharIndex={setSelectedCharIndex}
+
         />
       )}
-      <button className='search-button' onClick={handleSearchClick} disabled={query.length === 0}
-      >Search</button>
+      <button className='search-button' onClick={handleSearchClick} disabled={query.length === 0}>Search</button>
     </div>
   );
 };

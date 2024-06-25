@@ -5,18 +5,20 @@ const About = () => {
     return (
         <div className='about'>
             <h2>About The Project</h2>
-            <p>Work in progress for looking up arabic words and roots, including wildcards. This project utilizes
-                indices from <a href="https://www.ejtaal.net">ejtaal.net</a> as well as a <a href="https://github.com/alsaydi/root-ext-service/blob/main/data/word-root-table.txt">flatfile database</a> of
-                 arabic words and their roots collected by <a href="https://github.com/alsaydi">Abdalaziz Alsaydi</a>. This project was inspired by <a href="https://www.lexiqamus.com/en">LexiQamus.</a></p>
+            <p>Work in progress for looking up arabic words and roots, including wildcards, inspired by <a href="https://www.lexiqamus.com/en">LexiQamus.</a>. This project utilizes indices from <a href="https://www.ejtaal.net">ejtaal.net</a> as well as a <a href="https://github.com/alsaydi/root-ext-service/blob/main/data/word-root-table.txt">flatfile database</a> of
+                arabic words and their roots collected by <a href="https://github.com/alsaydi">Abdalaziz Alsaydi</a> and a noun list made by <a href="https://github.com/linuxscout/arramooz/">Taha Zerrouki</a>.</p>
             <h2>How to Use</h2>
             <p>Type in the term you are trying to look up, you can use * to represent a single character wildcard.
                 If you want to limit your search to include just a specific character or set of characters, you can click on the character in the "preview" that appears that you want to provide alternatives for.
                 For those working with manuscripts, there are letters that often resemble each other. For example, د can look like a ر or even a و, and so on. When you click on a character to provide alternatives, you will notice common
                 alternatives are provided for ease of use.</p>
-                <img src={`${process.env.PUBLIC_URL}/example.png`} alt="Example" />
-                <p>Currently, this tool only includes Hans Wehr and Steingass dictionaries, and there are links for each of these in the root results list that will bring to ejtaal.net and the appropriate page.
+            <img className='example-image' src={`${process.env.PUBLIC_URL}/example.png`} alt="Example" />
+            <p>There are two checkboxes, "أ" and "ة" that default to checked. The first will normalize إ، أ، and آ as ا. Meaning, if you search with ا it will match results with the other three. The second checkbox, ة, will match any ة with ه and vice versa. So searching نعمه, for example, will also match نعمة.</p>
+            <p>There are two checkboxes, "س" and "ل" that default to unchecked. The first stands for سابقة (prefix) and can be used if you are unsure whether one of the initial characters is a prefix (ف، ل، و، ن، ي، ت، ال، ك، س). If the initital character is one of these, then it will perform the search with this character as optional. The same logic applies with the second, which stands for لاحقة (suffix). For example, if you were to search رده and check this box, the results would include the roots رَدّ and رَدَه. </p>
+            <p>Currently, this tool only includes Hans Wehr and Steingass dictionaries, and there are links for each of these in the root results list that will bring to ejtaal.net and the appropriate page.
                 For some words, it is more beneficial to look them up alphabetically, so underneath each lemma on the left side of the search results you will find links with an (a) next to them, and these will look up the
                 term alphabetically.</p>
+
             <h2>To-Do List</h2>
             <ul>
                 <li>Add Lane's Lexicon and Hava</li>

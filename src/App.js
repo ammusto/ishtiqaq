@@ -1,5 +1,4 @@
-// App.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import SearchForm from './SearchForm';
 import Results from './Results';
@@ -8,16 +7,16 @@ import './Main.css';
 
 const App = () => {
   const [query, setQuery] = useState('');
+  const [queryDisplay, setQueryDisplay] = useState('');
   const [results, setResults] = useState([]);
   const [index, setIndex] = useState([]);
   const [hwIndex, setHwIndex] = useState({});
   const [sgIndex, setSgIndex] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
-  const [resultsPerPage] = useState(5);
+  const resultsPerPage = useMemo(() => 5, []);
   const [noResults, setNoResults] = useState(false);
   const [searchExecuted, setSearchExecuted] = useState(false);
   const [loading, setLoading] = useState(false);
-  console.count("App");
 
   useEffect(() => {
     fetch(`${process.env.PUBLIC_URL}/db_files/index.txt`)
@@ -34,7 +33,7 @@ const App = () => {
     loadIndex(`${process.env.PUBLIC_URL}/indices/sg.txt`, setSgIndex);
   }, []);
 
-  const loadIndex = (filePath, setState) => {
+  const loadIndex = useCallback((filePath, setState) => {
     fetch(filePath)
       .then(response => response.text())
       .then(text => {
@@ -47,21 +46,39 @@ const App = () => {
         }, {});
         setState(parsedIndex);
       });
-  };
+  }, []);
 
   const indexOfLastResult = currentPage * resultsPerPage;
   const indexOfFirstResult = indexOfLastResult - resultsPerPage;
-  const currentResults = results.slice(indexOfFirstResult, indexOfLastResult);
-  const totalPages = Math.ceil(results.length / resultsPerPage);
+  const currentResults = useMemo(() => results.slice(indexOfFirstResult, indexOfLastResult), [results, indexOfFirstResult, indexOfLastResult]);
+  const totalPages = useMemo(() => Math.ceil(results.length / resultsPerPage), [results, resultsPerPage]);
 
-  const handlePageChange = (page) => {
+  const handlePageChange = useCallback((page) => {
     setCurrentPage(page);
-  };
+  }, []);
 
-  const handleSearchExecuted = () => {
+  const handleSearchExecuted = useCallback(() => {
     setSearchExecuted(true);
     setLoading(false);
-  };
+  }, []);
+
+  const pagination = useMemo(() => {
+    if (results.length > resultsPerPage) {
+      return (
+        <div className="pagination">
+          <span className='pages-text'>Pages:</span>
+          {[...Array(totalPages).keys()].map(page => (
+            page + 1 === currentPage ? (
+              <span key={page} className="current-page">{page + 1}</span>
+            ) : (
+              <button key={page} onClick={() => handlePageChange(page + 1)}>{page + 1}</button>
+            )
+          ))}
+          <div>{results.length} Results</div>
+        </div>
+      );
+    }
+  }, [totalPages, currentPage, results.length, resultsPerPage, handlePageChange]);
 
   return (
     <Router>
@@ -80,6 +97,7 @@ const App = () => {
                 <SearchForm
                   query={query}
                   setQuery={setQuery}
+                  setQueryDisplay={setQueryDisplay}
                   setResults={setResults}
                   setCurrentPage={setCurrentPage}
                   index={index}
@@ -91,32 +109,12 @@ const App = () => {
                   currentResults={currentResults}
                   hwIndex={hwIndex}
                   sgIndex={sgIndex}
-                  query={query}
+                  queryDisplay={queryDisplay}
                   noResults={noResults}
                   searchExecuted={searchExecuted}
                   loading={loading}
                 />
-                {results.length > resultsPerPage && (
-                  <div className="pagination">
-                    <span className='pages-text'>
-                      Pages:
-                    </span>
-                    {[...Array(totalPages).keys()].map(page => (
-                      page + 1 === currentPage ? (
-                        <span key={page} className="current-page">
-                          {page + 1}
-                        </span>
-                      ) : (
-                        <button key={page} onClick={() => handlePageChange(page + 1)}>
-                          {page + 1}
-                        </button>
-                      )
-                    ))}
-                    <div>
-                      {results.length} Results
-                    </div>
-                  </div>
-                )}
+                {pagination}
               </>
             } />
             <Route path="/about" element={<About />} />
