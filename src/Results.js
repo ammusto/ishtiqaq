@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import DataLoader from './DataLoader';
 import ResultItem from './ResultItem';
+
 import './Results.css';
 
 const Results = memo(({ currentResults, hwIndex, sgIndex, llIndex, lsIndex, haIndex, queryDisplay, noResults, searchExecuted, loading, rootDefinitionList }) => {
@@ -10,7 +11,7 @@ const Results = memo(({ currentResults, hwIndex, sgIndex, llIndex, lsIndex, haIn
 
   if (noResults && searchExecuted) {
     return (
-      <div id="results p10 m-auto">
+      <div id="results" className="p10 m-auto">
         <div className='search-result flex'>
           <div className='word-result p10 flex'>
             <div><span className='arabic-font'>{queryDisplay}</span></div>
@@ -18,7 +19,6 @@ const Results = memo(({ currentResults, hwIndex, sgIndex, llIndex, lsIndex, haIn
               <div>
                 <a className='result-link p5' href={`https://ejtaal.net/aa/#hw4=${DataLoader.findPage(queryDisplay, 'hw', hwIndex)}`} target="_blank" rel="noopener noreferrer">HW(a)</a>/
                 <a className='result-link p5' href={`https://ejtaal.net/aa/#sg=${DataLoader.findPage(queryDisplay, 'sg', sgIndex)}`} target="_blank" rel="noopener noreferrer"> SG(a)</a>
-                
               </div>
             </div>
           </div>
@@ -43,7 +43,7 @@ const Results = memo(({ currentResults, hwIndex, sgIndex, llIndex, lsIndex, haIn
   });
 
   return (
-    <div id="results p10 m-auto">
+    <div id="results" className="p10 m-auto">
       {sortedResults.map((result, idx) => (
         <ResultItem key={idx} result={result} hwIndex={hwIndex} sgIndex={sgIndex} llIndex={llIndex} rootDefinitionList={rootDefinitionList} lsIndex={lsIndex} haIndex={haIndex} queryDisplay={queryDisplay} />
       ))}

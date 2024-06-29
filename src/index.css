@@ -61,6 +61,10 @@ p {
   margin:auto;
 }
 
+.center {
+  text-align: center;
+}
+
 .p10 {
   padding: 10px;
 }

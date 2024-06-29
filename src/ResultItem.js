@@ -1,4 +1,6 @@
 import React, { memo, useMemo, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+
 import DataLoader from './DataLoader';
 import './Results.css';
 
@@ -34,7 +36,8 @@ const ResultItem = memo(({ result, hwIndex, sgIndex, llIndex, lsIndex, haIndex, 
           <a className='result-link p5' href={`https://ejtaal.net/aa/#hw4=${rootLinksResult.hw},sg=${rootLinksResult.sg},ll=${rootLinksResult.ll},ls=${rootLinksResult.ls},ha=${rootLinksResult.ha}`} target="_blank" rel="noopener noreferrer">HW</a>/
           <a className='result-link p5' href={`https://ejtaal.net/aa/#sg=${rootLinksResult.sg},hw4=${rootLinksResult.hw},ll=${rootLinksResult.ll},ls=${rootLinksResult.ls},ha=${rootLinksResult.ha}`} target="_blank" rel="noopener noreferrer">SG</a>/
           <a className='result-link p5' href={`https://ejtaal.net/aa/#ll=${rootLinksResult.ll},ls=${rootLinksResult.ls},hw4=${rootLinksResult.hw},sg=${rootLinksResult.sg},ha=${rootLinksResult.ha}`} target="_blank" rel="noopener noreferrer">LL</a>/
-          <a className='result-link p5' href={`https://ejtaal.net/aa/#ha=${rootLinksResult.ha},hw4=${rootLinksResult.hw},sg=${rootLinksResult.sg},ll=${rootLinksResult.ll},ls=${rootLinksResult.ls}`} target="_blank" rel="noopener noreferrer">HA</a>
+          <a className='result-link p5' href={`https://ejtaal.net/aa/#ha=${rootLinksResult.ha},hw4=${rootLinksResult.hw},sg=${rootLinksResult.sg},ll=${rootLinksResult.ll},ls=${rootLinksResult.ls}`} target="_blank" rel="noopener noreferrer">HA</a>/
+          <Link className='result-link' to={`/clexica/${root}`}> CL</Link>
         </div>
       </div>
     );
@@ -47,7 +50,8 @@ const ResultItem = memo(({ result, hwIndex, sgIndex, llIndex, lsIndex, haIndex, 
         <div className='alphabetical-result'>
           <div>
             <a className='result-link p5' href={`https://ejtaal.net/aa/#hw4=${wordLinksResult.hw},sg=${wordLinksResult.sg},ll=${wordLinksResult.ll},ls=${wordLinksResult.ls},ha=${wordLinksResult.ha}`} target="_blank" rel="noopener noreferrer">HW(a)</a>/
-            <a className='result-link p5' href={`https://ejtaal.net/aa/#sg=${wordLinksResult.sg},hw4=${wordLinksResult.hw},ll=${wordLinksResult.ll},ls=${wordLinksResult.ls},ha=${wordLinksResult.ha}`} target="_blank" rel="noopener noreferrer">SG(a)</a>
+            <a className='result-link p5' href={`https://ejtaal.net/aa/#sg=${wordLinksResult.sg},hw4=${wordLinksResult.hw},ll=${wordLinksResult.ll},ls=${wordLinksResult.ls},ha=${wordLinksResult.ha}`} target="_blank" rel="noopener noreferrer">SG(a)</a> /
+            <Link className='result-link' to={`/clexica/${word}`}> CL(a)</Link>
           </div>
         </div>
       </div>

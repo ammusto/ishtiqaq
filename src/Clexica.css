@@ -1,0 +1,27 @@
+.clexica-result p {
+text-align: right;
+direction: rtl;
+font-size:1.25rem;
+line-height:1.5rem;
+}
+
+.clexica-result p em {
+    font-style: normal; 
+    font-weight: normal; 
+    color:red;
+  }
+
+  .text-button {
+    height:auto !important;
+    background-color: transparent;
+    padding:0px;
+
+  }
+
+  .text-button:hover {
+    height:auto !important;
+    background-color: transparent;
+    padding:0px;
+    color:black;
+    text-decoration: underline;
+  }

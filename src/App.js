@@ -5,6 +5,7 @@ import Results from './Results';
 import About from './About';
 import HowTo from './HowTo';
 import Pagination from './Pagination';
+import Clexica from './Clexica';
 
 const App = () => {
   const [query, setQuery] = useState('');
@@ -149,7 +150,7 @@ const App = () => {
             } />
             <Route path="/about" element={<About />} />
             <Route path="/howto" element={<HowTo />} />
-
+            <Route path="/clexica/:dict?/:query" element={<Clexica />} />
           </Routes>
         </div>
       </div>

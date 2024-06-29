@@ -1,7 +1,12 @@
 .about {
     width: 100%;
-    max-width: 600px;
+    max-width: 800px;
     text-align: left;
+}
+
+.about img {
+    display: block;
+    margin: auto; 
 }
 
 @media (max-width: 768px) {

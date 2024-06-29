@@ -1,0 +1,2 @@
+آ,taj1.json,0
+آأ,taj1.json,1
