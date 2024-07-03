@@ -1,0 +1,2 @@
+آأ,sihah1.json,0
+آدَ,sihah2.json,256

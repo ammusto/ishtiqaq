@@ -6,47 +6,56 @@ const Clexica = () => {
   const { query } = useParams();
   const [tajData, setTajData] = useState(null);
   const [maqData, setMaqData] = useState(null);
+  const [sihahData, setSihahData] = useState(null);
   const [highlightEnabled, setHighlightEnabled] = useState(true);
+  const [expandedDictionaries, setExpandedDictionaries] = useState({
+    maq: false,
+    taj: false,
+    sihah: false
+  });
+
 
   const fetchData = useCallback(async (dictionary) => {
     const indexFile = getIndexFile(query, dictionary);
-  
+
     const indexResponse = await fetch(`/clexica/${dictionary}_index_files/${indexFile}`);
     if (!indexResponse.ok) {
       setNotFoundMessage(dictionary);
       return;
     }
-    
+
     const indexText = await indexResponse.text();
     const indexLines = indexText.split('\n');
-    
+
     const indexLine = indexLines.find(line => line.startsWith(query));
-    
+
     if (!indexLine) {
       setNotFoundMessage(dictionary);
       return;
     }
-    
+
     const [, jsonFile] = indexLine.split(',');
-    
+
     const dataResponse = await fetch(`/clexica/${dictionary}_data/${jsonFile}`);
     if (!dataResponse.ok) {
       setNotFoundMessage(dictionary);
       return;
     }
-    
+
     const dataJson = await dataResponse.json();
-    
+
     const wordData = dataJson[query];
     if (!wordData) {
       setNotFoundMessage(dictionary);
       return;
     }
-    
+
     if (dictionary === 'taj') {
       setTajData(wordData);
-    } else {
+    } else if (dictionary === 'maq') {
       setMaqData(wordData);
+    } else {
+      setSihahData(wordData);
     }
   }, [query]);
 
@@ -55,15 +64,18 @@ const Clexica = () => {
       console.log(`Looking up query: ${query}`);
       fetchData('taj');
       fetchData('maq');
+      fetchData('sihah');
     }
   }, [query, fetchData]);
-  
+
   const setNotFoundMessage = (dictionary) => {
     const notFoundData = { def: "Results not found", pg: "" };
     if (dictionary === 'taj') {
       setTajData(notFoundData);
-    } else {
+    } else if (dictionary === 'maq') {
       setMaqData(notFoundData);
+    } else {
+      setSihahData(notFoundData);
     }
   };
 
@@ -93,6 +105,13 @@ const Clexica = () => {
 
   const toggleHighlight = () => {
     setHighlightEnabled(!highlightEnabled);
+  };
+
+  const toggleExpand = (dictionary) => {
+    setExpandedDictionaries(prev => ({
+      ...prev,
+      [dictionary]: !prev[dictionary]
+    }));
   };
 
   const formatPageNumber = (pgString) => {
@@ -133,20 +152,44 @@ const Clexica = () => {
         <button className='text-button' onClick={toggleHighlight}>
           {highlightEnabled ? "Remove Highlight" : "Add Highlight"}
         </button>
+        {/* <div> Jump to:
+        {maqData && <a href="#maqayis">Maqāyīs</a>}
+        {tajData && <a href="#taj">Tāj</a>}
+        {sihahData && <a href="#sihah">Ṣiḥāḥ</a>}
+        </div> */}
       </div>
-      {(!tajData && !maqData ) && <div>Loading...</div>}
+      {(!tajData && !maqData && !sihahData) && <div>Loading...</div>}
       {maqData && (
-        <div>
+        <div id="maqayis" className={`classical-dictionary ${expandedDictionaries.maq ? 'expanded' : ''}`}>
           <h2 className='center m0'>Maqāyīs al-lugha ({query})</h2>
           <div className='clexica-result'>{renderDefinition(maqData.def)}</div>
           <p className='center'>{formatPageNumber(maqData.pg)}</p>
+          <div className="gradient-overlay"></div>
+          <button className="expand-button" onClick={() => toggleExpand('maq')}>
+            {expandedDictionaries.maq ? '▲' : '▼'}
+          </button>
+        </div>
+      )}
+      {sihahData && (
+        <div id="sihah" className={`classical-dictionary ${expandedDictionaries.sihah ? 'expanded' : ''}`}>
+          <h2 className='center m0'>al-Ṣiḥāḥ ({query})</h2>
+          <div className='clexica-result'>{renderDefinition(sihahData.def)}</div>
+          <p className='center'>{formatPageNumber(sihahData.pg)}</p>
+          <div className="gradient-overlay"></div>
+          <button className="expand-button" onClick={() => toggleExpand('sihah')}>
+            {expandedDictionaries.sihah ? '▲' : '▼'}
+          </button>
         </div>
       )}
       {tajData && (
-        <div>
+        <div id="taj" className={`classical-dictionary ${expandedDictionaries.taj ? 'expanded' : ''}`}>
           <h2 className='center m0'>Tāj al-ʿarūs ({query})</h2>
           <div className='clexica-result'>{renderDefinition(tajData.def)}</div>
           <p className='center'>{formatPageNumber(tajData.pg)}</p>
+          <div className="gradient-overlay"></div>
+          <button className="expand-button" onClick={() => toggleExpand('taj')}>
+            {expandedDictionaries.taj ? '▲' : '▼'}
+          </button>
         </div>
       )}
     </div>
