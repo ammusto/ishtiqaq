@@ -49,6 +49,8 @@ const HowTo = () => {
             <p>Currently, this tool only includes Hans Wehr, Steingass, Lane's Lexicon, and Hava, and there are links for each of these in the root results list that will bring to ejtaal.net and the appropriate page. <strong>HW</strong> is Hans Wehr, <strong>SG</strong> is Steingass, <strong>LL</strong> is Lane's Lexicon, <strong>HA</strong> is Hava, and <strong>CL</strong> stands for classical lexica (for now just Maqāyīs al-lugha and Tāj al-ʿarūs). For some words, it is more beneficial to look them up alphabetically, so underneath each lemma on the left side of the search results you will find links with an <strong>(a)</strong> next to them, and these will look up the term alphabetically.</p>
             <p><strong>NB:</strong> The root dictionary is not very robust and has only been lightly cleaned, so if you are not very familiar with a root's definition, please double check the dictionaries!</p>
             <p><strong>Tip:</strong> You can navigate the pages with left and right arrow for ease of use.</p>
+            <p><strong>Tip:</strong> The quick root lookup does not cover every single root of the Arabic language. Therefore it is useful, especially with lesser known roots, to look them up alphabetically using the CL(a) lookup. Steingass is also quite useful for this and contains many more roots than Hans Wehr as does Hava.</p>
+            <p><strong>Tip:</strong> If you are looking up an uncommon triliteral or quadriliteral root (i.e. not a conjugated verb or derived noun), then it is recommended to search the classical lexica alphabetically, even if there are results. For example, in the image below</p>
         </div>
     );
 };

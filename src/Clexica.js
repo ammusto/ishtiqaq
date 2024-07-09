@@ -14,42 +14,92 @@ const Clexica = () => {
     sihah: false
   });
 
-
   const fetchData = useCallback(async (dictionary) => {
-    const indexFile = getIndexFile(query, dictionary);
-
+    let modifiedQuery = query;
+    const indexFile = getIndexFile(modifiedQuery, dictionary);
+    console.log(dictionary);
+  
     const indexResponse = await fetch(`/clexica/${dictionary}_index_files/${indexFile}`);
+    console.log(indexFile);
     if (!indexResponse.ok) {
       setNotFoundMessage(dictionary);
       return;
     }
-
+  
     const indexText = await indexResponse.text();
     const indexLines = indexText.split('\n');
+  
+    let indexLine = indexLines.find(line => line.startsWith(modifiedQuery));
+    
 
-    const indexLine = indexLines.find(line => line.startsWith(query));
+    if (!indexLine && dictionary === 'maq' && modifiedQuery.endsWith('ى')) {
+      modifiedQuery = modifiedQuery.slice(0, -1) + 'وى';
+      indexLine = indexLines.find(line => line.startsWith(modifiedQuery));
+      console.log(modifiedQuery)
+    }
 
+    if (!indexLine && dictionary === 'maq' && modifiedQuery.endsWith('ووى')) {
+      modifiedQuery = modifiedQuery.slice(0, -1) + 'ي';
+      indexLine = indexLines.find(line => line.startsWith(modifiedQuery));
+    }
+
+    if (!indexLine && modifiedQuery.endsWith('ي')) {
+      modifiedQuery = modifiedQuery.slice(0, -1) + 'ى';
+      indexLine = indexLines.find(line => line.startsWith(modifiedQuery));
+    }
+
+    if (!indexLine && modifiedQuery.endsWith('و')) {
+      modifiedQuery = modifiedQuery.slice(0, -1) + 'ا';
+      indexLine = indexLines.find(line => line.startsWith(modifiedQuery));
+    }
+
+    if (!indexLine && modifiedQuery.endsWith('ا')) {
+      modifiedQuery = modifiedQuery.slice(0, -1) + 'ى';
+      indexLine = indexLines.find(line => line.startsWith(modifiedQuery));
+    }
+
+
+    if (!indexLine && modifiedQuery.endsWith('ى')) {
+      modifiedQuery = modifiedQuery.slice(0, -1) + 'ا';
+      indexLine = indexLines.find(line => line.startsWith(modifiedQuery));
+    }
+
+    if (!indexLine && modifiedQuery.endsWith('ا')) {
+      modifiedQuery = modifiedQuery.slice(0, -1) + 'و';
+      indexLine = indexLines.find(line => line.startsWith(modifiedQuery));
+    }
+
+    console.log(indexLine);
     if (!indexLine) {
       setNotFoundMessage(dictionary);
       return;
     }
-
+  
     const [, jsonFile] = indexLine.split(',');
-
+  
     const dataResponse = await fetch(`/clexica/${dictionary}_data/${jsonFile}`);
+    console.log(jsonFile);
     if (!dataResponse.ok) {
       setNotFoundMessage(dictionary);
       return;
     }
-
+  
     const dataJson = await dataResponse.json();
+  
+    let wordData = dataJson[modifiedQuery];
+  
+    
+    if (!wordData && dictionary === 'maq' && modifiedQuery.endsWith('و')) {
+      modifiedQuery = modifiedQuery.slice(0, -1) + 'وى';
+      wordData = dataJson[modifiedQuery];
+    }
+  
 
-    const wordData = dataJson[query];
     if (!wordData) {
       setNotFoundMessage(dictionary);
       return;
     }
-
+  
     if (dictionary === 'taj') {
       setTajData(wordData);
     } else if (dictionary === 'maq') {
@@ -61,7 +111,6 @@ const Clexica = () => {
 
   useEffect(() => {
     if (query) {
-      console.log(`Looking up query: ${query}`);
       fetchData('taj');
       fetchData('maq');
       fetchData('sihah');
@@ -88,11 +137,13 @@ const Clexica = () => {
   };
 
   const getIndexFile = (word, dictionary) => {
-    const firstLetter = word.charAt(0);
-    const letterMap = 'ابتثجحخدذرزسشصضطظعغفقكلمنهوي';
+    let firstLetter = word.charAt(0);
+
+    const letterMap = 'أبتثجحخدذرزسشصضطظعغفقكلمنهوي';
     const fileNumber = letterMap.indexOf(firstLetter) + 1;
     return `${dictionary}_index_${fileNumber}.txt`;
   };
+
 
   const renderDefinition = (definition) => {
     const paragraphs = definition.split(/\n/);
