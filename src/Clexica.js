@@ -19,7 +19,7 @@ const Clexica = () => {
   });
 
   const fetchData = useCallback(async (dictionary) => {
-    let modifiedQuery = query;
+    let modifiedQuery = query.replace(/ء/g, 'أ');
     const indexFile = getIndexFile(modifiedQuery, dictionary);
     console.log(dictionary);
 
