@@ -1,0 +1,96 @@
+تار,maq3.json
+تام,maq3.json
+تبب,maq3.json
+تبر,maq3.json
+تبع,maq3.json
+تبل,maq3.json
+تبن,maq3.json
+تجر,maq3.json
+تحت,maq3.json
+تحم,maq3.json
+تخخ,maq3.json
+تخذ,maq3.json
+تخم,maq3.json
+ترب,maq3.json
+ترج,maq3.json
+ترح,maq3.json
+ترر,maq3.json
+ترز,maq3.json
+ترس,maq3.json
+ترش,maq3.json
+ترص,maq3.json
+ترع,maq3.json
+ترف,maq3.json
+ترق,maq3.json
+ترك,maq3.json
+تره,maq3.json
+تسع,maq3.json
+تعب,maq3.json
+تعر,maq3.json
+تعس,maq3.json
+تعص,maq3.json
+تعع,maq3.json
+تغغ,maq3.json
+تفث,maq3.json
+تفح,maq3.json
+تفر,maq3.json
+تفف,maq3.json
+تفل,maq3.json
+تفه,maq3.json
+تق,maq3.json
+تقد,maq3.json
+تقن,maq3.json
+تكك,maq3.json
+تلد,maq3.json
+تلع,maq3.json
+تلف,maq3.json
+تلل,maq3.json
+تلم,maq3.json
+تله,maq3.json
+تلو,maq3.json
+تم كتاب الباء,maq3.json
+تم كتاب التاء,maq3.json
+تم كتاب الجيم,maq3.json
+تم كتاب الحاء,maq3.json
+تم كتاب الخاء,maq3.json
+تم كتاب الذال,maq3.json
+تم كتاب الزاء,maq3.json
+تم كتاب الصاد,maq3.json
+تم كتاب الضاد,maq3.json
+تم كتاب الطاء,maq3.json
+تم كتاب الغين، والله اعلم بالصواب,maq3.json
+تم كتاب القاف والله اعلم بالصواب,maq3.json
+تم كتاب الكاف,maq3.json
+تم كتاب اللام، والله اعلم بالصواب,maq3.json
+تم كتاب النون,maq3.json
+تم كتاب الهاء، والله اعلم بالصواب,maq3.json
+تم كتاب الواو والله اعلم بالصواب,maq3.json
+تمر,maq3.json
+تمك,maq3.json
+تمم,maq3.json
+تمه,maq3.json
+تنا,maq3.json
+تنخ,maq3.json
+تنف,maq3.json
+تنن,maq3.json
+ته,maq3.json
+تهم,maq3.json
+تو,maq3.json
+توب,maq3.json
+توت,maq3.json
+توخ,maq3.json
+تور,maq3.json
+توس,maq3.json
+توع,maq3.json
+توق,maq3.json
+تول,maq3.json
+توه,maq3.json
+توي,maq3.json
+تيح,maq3.json
+تير,maq3.json
+تيز,maq3.json
+تيس,maq3.json
+تيع,maq3.json
+تيم,maq3.json
+تين,maq3.json
+تيه,maq3.json

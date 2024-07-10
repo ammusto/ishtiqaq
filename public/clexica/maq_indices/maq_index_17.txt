@@ -1,0 +1,17 @@
+ظاب,maq17.json
+ظار,maq17.json
+ظام,maq17.json
+ظبى,maq17.json
+ظرب,maq17.json
+ظرر,maq17.json
+ظرف,maq17.json
+ظعن,maq17.json
+ظفر,maq17.json
+ظلع,maq17.json
+ظلف,maq17.json
+ظلل,maq17.json
+ظلم,maq17.json
+ظما,maq17.json
+ظنب,maq17.json
+ظنن,maq17.json
+ظهر,maq17.json
