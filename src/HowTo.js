@@ -32,25 +32,36 @@ const HowTo = () => {
             </p>
             <p>
                 There are two checkboxes,
-                "<span className='med-font arabic-font'>س</span>" and
-                "<span className='med-font arabic-font'>ل</span>" that default to unchecked.
+                "<span className='med-font arabic-font'>س </span>" and
+                "<span className='med-font arabic-font'>ل </span>" that default to unchecked.
                 The first stands for <span className='med-font arabic-font'> سابقة</span> (prefix) and can be used if you're unsure whether one of the initial characters is a prefix
                 (<span className='med-font arabic-font'> ف، ل، و، ن، ي، ت، ال، ك، س </span>).
                 If the initial character is one of these, then it will perform the search with this character as optional.
                 The same logic applies with the second, which stands for
-                <span className='med-font arabic-font'> لاحقة</span> (suffix).
+                <span className='med-font arabic-font'> لاحقة </span> (suffix).
                 For example, if you were to search
-                <span className='med-font arabic-font'> رده</span> and check this box, the results would include the roots
-                <span className='med-font arabic-font'> رَدّ</span> and
-                <span className='med-font arabic-font'> رَدَه</span>.
+                <span className='med-font arabic-font'> رده </span> and check this box, the results would include the roots
+                <span className='med-font arabic-font'> رَدّ </span> and
+                <span className='med-font arabic-font'> رَدَه </span>.
             </p>
 
             <img className='example-image' src={`${process.env.PUBLIC_URL}/example2.png`} alt="Example" />
-            <p>Currently, this tool only includes Hans Wehr, Steingass, Lane's Lexicon, and Hava, and there are links for each of these in the root results list that will bring to ejtaal.net and the appropriate page. <strong>HW</strong> is Hans Wehr, <strong>SG</strong> is Steingass, <strong>LL</strong> is Lane's Lexicon, <strong>HA</strong> is Hava, and <strong>CL</strong> stands for classical lexica (for now just Maqāyīs al-lugha and Tāj al-ʿarūs). For some words, it is more beneficial to look them up alphabetically, so underneath each lemma on the left side of the search results you will find links with an <strong>(a)</strong> next to them, and these will look up the term alphabetically.</p>
-            <p><strong>NB:</strong> The root dictionary is not very robust and has only been lightly cleaned, so if you are not very familiar with a root's definition, please double check the dictionaries!</p>
+            <p>This tool  includes Hans Wehr, Steingass, Lane's Lexicon, and Hava, and there are links for each of these in the root results list that will bring to ejtaal.net and the appropriate page. <strong>HW</strong> is Hans Wehr, <strong>SG</strong> is Steingass, <strong>LL</strong> is Lane's Lexicon, <strong>HA</strong> is Hava. There is also a link for <strong>CL</strong>, which stands for classical lexica, and will look up the root in several classical lexica, including Maqāyīs al-lugha, al-Ṣiḥāḥ fī al-lugha, Tāj al-ʿarūs, al-Muḥīṭ fī al-lugha, and Lisān al-ʿarab. For some words or roots, it is more beneficial to look them up alphabetically, so underneath each lemma on the left side of the search results you will find links with an <strong>(a)</strong> next to them, and these will look up the term alphabetically.</p>
+            <p><strong>NB:</strong> The root dictionary definitions are not very robust and have only been lightly cleaned, so if you are not very familiar with a root's definition, please double check the dictionaries!</p>
             <p><strong>Tip:</strong> You can navigate the pages with left and right arrow for ease of use.</p>
-            <p><strong>Tip:</strong> The quick root lookup does not cover every single root of the Arabic language. Therefore it is useful, especially with lesser known roots, to look them up alphabetically using the CL(a) lookup. Steingass is also quite useful for this and contains many more roots than Hans Wehr as does Hava.</p>
-            <p><strong>Tip:</strong> If you are looking up an uncommon triliteral or quadriliteral root (i.e. not a conjugated verb or derived noun), then it is recommended to search the classical lexica alphabetically, even if there are results. For example, in the image below</p>
+            <p><strong>Tip:</strong> The root list used for ishtiqaq is in the process of being udpated with rare and classical roots. Therefore it is useful, especially with lesser known roots, to look them up alphabetically using the CL(a) lookup. Steingass is also quite useful for this and contains many more roots than Hans Wehr as does Hava.</p>
+            <p><strong>Tip:</strong> If searching an entire rasm for a derived term (i.e. not a bare root) does not yield results that work, it is advisable to search the base root, with wildcards if you are unsure of the characters. And, in addition to any possible root matches, be sure to check the <strong>CL(a)</strong> link. For example, in the image below, the root search is
+            <span className='med-font arabic-font'> أضا </span>
+            which produces a single possible root result of
+            <span className='med-font arabic-font'> أضض</span>. 
+            However, there is a rare root not attested in HW, LL, HA, or SG that can be found in classical lexica:
+            <span className='med-font arabic-font'> أضا</span>. So in this case, you would want to check the
+            <span className='med-font arabic-font'> أضض</span> links and then, on the left, check the alphabetical search (a) in both the English-Arabic dictionaries as well as the classical lexica, which will search for <span className='med-font arabic-font'> أضا</span>.
+            <img className='example-image' src={`${process.env.PUBLIC_URL}/example3.png`} alt="Example" />
+
+
+             </p>
+
         </div>
     );
 };
