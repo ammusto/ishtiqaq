@@ -46,21 +46,44 @@ const HowTo = () => {
             </p>
 
             <img className='example-image' src={`${process.env.PUBLIC_URL}/example2.png`} alt="Example" />
-            <p>This tool  includes Hans Wehr, Steingass, Lane's Lexicon, and Hava, and there are links for each of these in the root results list that will bring to ejtaal.net and the appropriate page. <strong>HW</strong> is Hans Wehr, <strong>SG</strong> is Steingass, <strong>LL</strong> is Lane's Lexicon, <strong>HA</strong> is Hava. There is also a link for <strong>CL</strong>, which stands for classical lexica, and will look up the root in several classical lexica, including Maqāyīs al-lugha, al-Ṣiḥāḥ fī al-lugha, Tāj al-ʿarūs, al-Muḥīṭ fī al-lugha, and Lisān al-ʿarab. For some words or roots, it is more beneficial to look them up alphabetically, so underneath each lemma on the left side of the search results you will find links with an <strong>(a)</strong> next to them, and these will look up the term alphabetically.</p>
+            <p>
+                In the example above, the search was initital for
+                <span className='med-font arabic-font'> مرق </span>, but the user was unsure about the middle character, so various other possibilities were selected, including</p>
+                <p className='center'>
+                <span className='med-font arabic-font'> مدق </span> - 
+                <span className='med-font arabic-font'> مذق </span> - 
+                <span className='med-font arabic-font'> مزق </span> - 
+                <span className='med-font arabic-font'> موق </span>
+            </p>
+
+            <p>
+                In this result, there is a word to the left, 
+                <span className='med-font arabic-font'> مزق </span>,
+                 which is one possibile lemma and reading of the ambiguous term. On the right there are several possible roots that could produce the lemma 
+                 <span className='med-font arabic-font'> مزق </span>. For example, this could be read as 
+                 <span className='med-font arabic-font'> مُزْقٍ </span> from the root:
+                 <span className='med-font arabic-font'> زقو </span> or 
+                 <span className='med-font arabic-font'> زقي </span>. It could also be read as 
+                 <span className='med-font arabic-font'> مُزِقّ </span> from the root 
+                 <span className='med-font arabic-font'> زقق </span> or it could simple be the from the root 
+                 <span className='med-font arabic-font'> مزق </span>. The links below each root will take you to the appropriate pages in various dictionaries to look up the meaning.
+
+            </p>
+            <p>For Arabic-English dictionaries, ishtiqāq  includes Hans Wehr, Steingass, Lane's Lexicon, and Hava, with links that will bring to ejtaal.net and the appropriate page. <strong>HW</strong> is Hans Wehr, <strong>SG</strong> is Steingass, <strong>LL</strong> is Lane's Lexicon, <strong>HA</strong> is Hava. I added a link <strong>MA</strong>, which looks up the root on  <a href="https://www.maajim.com">maajim.com</a>, an arabic-arabic dictionary that includes many classical lexica. However, there is also a link for <strong>CL</strong>, which stands for classical lexica, and will look up the root in several classical Arabic dictionaries right on ishtiqaq.com, including Maqāyīs al-lugha, al-Ṣiḥāḥ fī al-lugha, Tāj al-ʿarūs, al-Muḥīṭ fī al-lugha, and Lisān al-ʿarab. For some words or roots, it is more beneficial to look them up alphabetically, so underneath each lemma on the left side of the search results you will find links with an <strong>(a)</strong> next to them, and these will look up the term alphabetically.</p>
             <p><strong>NB:</strong> The root dictionary definitions are not very robust and have only been lightly cleaned, so if you are not very familiar with a root's definition, please double check the dictionaries!</p>
             <p><strong>Tip:</strong> You can navigate the pages with left and right arrow for ease of use.</p>
             <p><strong>Tip:</strong> The root list used for ishtiqaq is in the process of being udpated with rare and classical roots. Therefore it is useful, especially with lesser known roots, to look them up alphabetically using the CL(a) lookup. Steingass is also quite useful for this and contains many more roots than Hans Wehr as does Hava.</p>
             <p><strong>Tip:</strong> If searching an entire rasm for a derived term (i.e. not a bare root) does not yield results that work, it is advisable to search the base root, with wildcards if you are unsure of the characters. And, in addition to any possible root matches, be sure to check the <strong>CL(a)</strong> link. For example, in the image below, the root search is
-            <span className='med-font arabic-font'> أضا </span>
-            which produces a single possible root result of
-            <span className='med-font arabic-font'> أضض</span>. 
-            However, there is a rare root not attested in HW, LL, HA, or SG that can be found in classical lexica:
-            <span className='med-font arabic-font'> أضا</span>. So in this case, you would want to check the
-            <span className='med-font arabic-font'> أضض</span> links and then, on the left, check the alphabetical search (a) in both the English-Arabic dictionaries as well as the classical lexica, which will search for <span className='med-font arabic-font'> أضا</span>.
-            <img className='example-image' src={`${process.env.PUBLIC_URL}/example3.png`} alt="Example" />
+                <span className='med-font arabic-font'> أضا </span>
+                which produces a single possible root result of
+                <span className='med-font arabic-font'> أضض</span>.
+                However, there is a rare root not attested in HW, LL, HA, or SG that can be found in classical lexica:
+                <span className='med-font arabic-font'> أضا</span>. So in this case, you would want to check the
+                <span className='med-font arabic-font'> أضض</span> links and then, on the left, check the alphabetical search (a) in both the English-Arabic dictionaries as well as the classical lexica, which will search for <span className='med-font arabic-font'> أضا</span>.
+                <img className='example-image' src={`${process.env.PUBLIC_URL}/example3.png`} alt="Example" />
 
 
-             </p>
+            </p>
 
         </div>
     );

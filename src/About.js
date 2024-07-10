@@ -10,6 +10,7 @@ const About = () => {
                 arabic words and their roots collected by <a href="https://github.com/alsaydi">Abdalaziz Alsaydi</a>, and a noun list made by <a href="https://github.com/linuxscout/arramooz/">Taha Zerrouki</a>. English dictionary data was scraped from an OCR'd version of Hans Wehr and from the <a href="https://www.livingarabic.com/">Living Arabic Project</a>, and the classical lexica were scraped from al-maktaba <a href="www.shamela.ws">al-shamela</a> and <a href="https://www.lesanarab.com/">lesanarab.com</a>.</p>
             <h2>Recent Updates</h2>
             <ul>
+                <li>Added a link to <a href="https://www.maajim.com">maajim.com</a> in results</li>
                 <li>Added al-Muḥīṭ fī al-lugha and Lisān al-ʿArab</li>
                 <li>Added Tār al-ʿarūs and Maqāyīs al-lugha</li>
                 <li>Added Lane's Lexicon and Hava look up</li>
