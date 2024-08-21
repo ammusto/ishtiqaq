@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import SearchForm from './SearchForm';
 import Results from './Results';
 import About from './About';
 import HowTo from './HowTo';
 import Pagination from './Pagination';
 import Clexica from './Clexica';
+import Layout from './Layout';
 
 const App = () => {
   const [query, setQuery] = useState('');
@@ -53,7 +54,7 @@ const App = () => {
         setState(parsedDefinitions);
       });
   }, []);
-  
+
   useEffect(() => {
     fetch(`${process.env.PUBLIC_URL}/db_files/index.txt`)
       .then(response => response.text())
@@ -101,59 +102,53 @@ const App = () => {
 
   return (
     <Router>
-      <div className='container'>
-        <div className="main">
-          <h1><a href="http://ishtiqaq.pages.dev" className='main-link'>Ishtiqāq</a></h1>
-          <nav className="navbar">
-            <ul className="nav-links flex m0">
-              <li><Link to="/">Search</Link></li>
-              <li><Link to="/about">About</Link></li>
-              <li><Link to="/howto">How To Use</Link></li>
-              <li><a href="https://github.com/ammusto/ishtiqaq" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-            </ul>
-          </nav>
-          <Routes>
-            <Route path="/" element={
-              <>
-                <SearchForm
-                  query={query}
-                  setQuery={setQuery}
-                  setQueryDisplay={setQueryDisplay}
-                  setResults={setResults}
-                  setCurrentPage={setCurrentPage}
-                  index={index}
-                  setNoResults={setNoResults}
-                  handleSearchExecuted={handleSearchExecuted}
-                  setLoading={setLoading}
-                />
-                <Results
-                  currentResults={currentResults}
-                  queryDisplay={queryDisplay}
-                  llIndex={llIndex}
-                  lsIndex={lsIndex}
-                  hwIndex={hwIndex}
-                  sgIndex={sgIndex}
-                  haIndex={haIndex}
-                  rootDefinitionList={rootDefinitionList}
-                  noResults={noResults}
-                  searchExecuted={searchExecuted}
-                  loading={loading}
-                />
-                <Pagination
-                  totalPages={totalPages}
-                  currentPage={currentPage}
-                  setCurrentPage={setCurrentPage}
-                  resultsLength={results.length}
-                  resultsPerPage={resultsPerPage}
-                />
-              </>
-            } />
-            <Route path="/about" element={<About />} />
-            <Route path="/howto" element={<HowTo />} />
-            <Route path="/clexica/:dict?/:query" element={<Clexica />} />
-          </Routes>
+      <Layout>
+        <div className='container'>
+          <div className="main">
+            <Routes>
+              <Route path="/" element={
+                <>
+                  <SearchForm
+                    query={query}
+                    setQuery={setQuery}
+                    setQueryDisplay={setQueryDisplay}
+                    setResults={setResults}
+                    setCurrentPage={setCurrentPage}
+                    index={index}
+                    setNoResults={setNoResults}
+                    handleSearchExecuted={handleSearchExecuted}
+                    setLoading={setLoading}
+                  />
+                  <Results
+                    currentResults={currentResults}
+                    queryDisplay={queryDisplay}
+                    llIndex={llIndex}
+                    lsIndex={lsIndex}
+                    hwIndex={hwIndex}
+                    sgIndex={sgIndex}
+                    haIndex={haIndex}
+                    rootDefinitionList={rootDefinitionList}
+                    noResults={noResults}
+                    searchExecuted={searchExecuted}
+                    loading={loading}
+                  />
+                  <Pagination
+                    totalPages={totalPages}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    resultsLength={results.length}
+                    resultsPerPage={resultsPerPage}
+                  />
+                </>
+              } />
+              <Route path="/about" element={<About />} />
+              <Route path="/howto" element={<HowTo />} />
+              <Route path="/clexica/:dict?/:query" element={<Clexica />} />
+            </Routes>
+          </div>
         </div>
-      </div>
+      </Layout>
+
     </Router>
   );
 };

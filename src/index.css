@@ -9,6 +9,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-y: scroll;
+  margin:0px;
 }
 
 div, nav{
@@ -17,6 +18,12 @@ div, nav{
 
 a {
   font-size:1rem !important;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 
