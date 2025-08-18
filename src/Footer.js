@@ -10,7 +10,7 @@ const Footer = () => {
           </a>
         </div>
         <div>
-        © Antonio Musto 2024
+          © Antonio Musto {new Date().getFullYear()}
         </div>
       </div>
     </footer>
