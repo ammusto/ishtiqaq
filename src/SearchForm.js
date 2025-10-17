@@ -48,7 +48,6 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
     setSuffixFlag(e.target.checked)
   }
 
-  // In SearchForm.js, replace the searchWords function with this:
 
   const searchWords = useCallback((pattern) => {
     setCharOptions(currentCharOptions => {
