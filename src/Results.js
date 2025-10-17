@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import DataLoader from './DataLoader';
 import ResultItem from './ResultItem';
 import { Link } from 'react-router-dom';
@@ -17,7 +17,19 @@ const Results = memo(({ currentResults, hwIndex, sgIndex, llIndex, lsIndex, haIn
     };
   }, [hwIndex, sgIndex, llIndex, lsIndex, haIndex]);
 
-  const rootLinksResult = wordLinks(queryDisplay);
+  // Only compute this if we have loaded indices
+  const indicesLoaded = useMemo(() => {
+    return Object.keys(hwIndex).length > 0 && 
+           Object.keys(sgIndex).length > 0 &&
+           Object.keys(llIndex).length > 0 &&
+           Object.keys(lsIndex).length > 0 &&
+           Object.keys(haIndex).length > 0;
+  }, [hwIndex, sgIndex, llIndex, lsIndex, haIndex]);
+
+  const rootLinksResult = useMemo(() => {
+    if (!indicesLoaded) return null;
+    return wordLinks(queryDisplay);
+  }, [indicesLoaded, wordLinks, queryDisplay]);
 
 
   if (loading) {
@@ -25,6 +37,11 @@ const Results = memo(({ currentResults, hwIndex, sgIndex, llIndex, lsIndex, haIn
   }
 
   if (noResults && searchExecuted) {
+    // Only render if indices are loaded
+    if (!indicesLoaded) {
+      return null;
+    }
+
     return (
       <div id="results" className="p10 m-auto">
         <div className='search-result flex'>

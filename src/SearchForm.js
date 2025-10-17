@@ -48,6 +48,8 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
     setSuffixFlag(e.target.checked)
   }
 
+  // In SearchForm.js, replace the searchWords function with this:
+
   const searchWords = useCallback((pattern) => {
     setCharOptions(currentCharOptions => {
       const normalizeChar = (char) => {
@@ -90,7 +92,7 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
 
       const prefixes = ['ف', 'ل', 'و', 'ن', 'ي', 'ت', 'ال', 'ك', 'س'];
       const suffixes = ['ه', 'ها', 'هم', 'هن', 'هما', 'ني', 'ك', 'كم', 'كما', 'ن', 'نا', 'هة'];
-      
+
       let regexPattern = pattern.split('').map((char, index) => {
         const optionsKey = `${char}-${index}`;
         if (currentCharOptions[optionsKey]) {
@@ -119,10 +121,9 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
           }
         }
       }
-      console.log(regexPattern)
 
       regexPattern = new RegExp('^' + regexPattern.replace(/\[\*\]/g, '.') + '$', 'i');
-      console.log(regexPattern)
+
       let filesToSearch = index.filter(entry => {
         const minWord = entry.firstWord.replace(/\*/g, '');
         const maxWord = entry.lastWord.replace(/\*/g, '');
@@ -132,22 +133,42 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
         return Array.from(startingChars).some(char => char >= minInitial && char <= maxInitial);
       });
 
-      Promise.all(filesToSearch.map(async entry => {
-        const filePath = `${process.env.PUBLIC_URL}/${entry.file}`;
-        try {
-          const response = await fetch(filePath);
-          const data = await response.text();
-          const words = data.trim().split('\n');
-          const matchedWords = words.filter(line => {
-            const word = line.split('#')[0];
-            const isMatch = regexPattern.test(word);
-            return isMatch;
+      // Use Web Worker for heavy lifting
+      const workerPromises = filesToSearch.map(entry => {
+        return new Promise((resolve) => {
+          // Create a new worker for each file
+          const worker = new Worker(`${process.env.PUBLIC_URL}/searchWorker.js`);
+
+          // Send the file path and regex pattern to the worker
+          worker.postMessage({
+            filePath: `${process.env.PUBLIC_URL}/${entry.file}`,
+            regexPattern: {
+              pattern: regexPattern.source,
+              flags: regexPattern.flags
+            }
           });
-          return matchedWords;
-        } catch (error) {
-          return [];
-        }
-      }))
+
+          // Listen for results
+          worker.onmessage = (event) => {
+            if (event.data.success) {
+              resolve(event.data.matchedWords);
+            } else {
+              console.error('Worker error:', event.data.error);
+              resolve([]);
+            }
+            worker.terminate();
+          };
+
+          // Handle worker errors
+          worker.onerror = (error) => {
+            console.error('Worker execution error:', error);
+            resolve([]);
+            worker.terminate();
+          };
+        });
+      });
+
+      Promise.all(workerPromises)
         .then(resultsArrays => {
           const allResults = resultsArrays.flat();
           setResults(allResults);
@@ -158,10 +179,12 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
           }
         })
         .catch(error => {
+          console.error('Search error:', error);
           setLoading(false);
           handleSearchExecuted();
           setNoResults(true);
         });
+
       return currentCharOptions;
     });
   }, [index, setResults, setLoading, handleSearchExecuted, setNoResults, alifFlag, taMarbutaFlag, prefixFlag, suffixFlag]);
@@ -248,7 +271,7 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
       }
     });
   }, [selectedCharIndex, charOptions]);
-  
+
 
   const handleAddChar = useCallback(() => {
     if (additionalChars && !charOptions[selectedCharIndex].additionalCharsList.includes(additionalChars)) {
@@ -311,7 +334,7 @@ const SearchForm = ({ query, setQuery, setResults, setCurrentPage, index, setNoR
             onChange={handleAlifCheck}
           />
         </label>
-         
+
         <label>
           س
           <input

@@ -25,37 +25,75 @@ const App = () => {
   const [searchExecuted, setSearchExecuted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const loadIndex = useCallback((filePath, setState) => {
+  const loadIndex = useCallback((filePath, setState, indexName) => {
+    console.log(`Starting to load ${indexName} from ${filePath}`);
+    
     fetch(filePath)
-      .then(response => response.text())
+      .then(response => {
+        console.log(`${indexName} fetch response status: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch ${indexName}: ${response.statusText}`);
+        }
+        return response.text();
+      })
       .then(text => {
+        console.log(`${indexName} raw text length: ${text.length}`);
+        console.log(`${indexName} first 200 chars:`, text.substring(0, 200));
+        
         const parsedIndex = text.split('\n').reduce((acc, line) => {
-          const [page, root] = line.split('=');
-          if (!acc[root]) {
-            acc[root] = parseInt(page, 10);
+          if (line.trim()) { // Only process non-empty lines
+            const [page, root] = line.split('=');
+            if (page && root && !acc[root.trim()]) {
+              acc[root.trim()] = parseInt(page, 10);
+            }
           }
           return acc;
         }, {});
+        
+        console.log(`${indexName} parsed entries: ${Object.keys(parsedIndex).length}`);
+        console.log(`${indexName} sample entries:`, Object.entries(parsedIndex).slice(0, 5));
+        
         setState(parsedIndex);
+      })
+      .catch(error => {
+        console.error(`Error loading ${indexName}:`, error);
       });
   }, []);
 
   const loadDefinitions = useCallback((filePath, setState) => {
+    console.log(`Starting to load definitions from ${filePath}`);
     fetch(filePath)
-      .then(response => response.text())
+      .then(response => {
+        console.log(`Definitions fetch response status: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch definitions: ${response.statusText}`);
+        }
+        return response.text();
+      })
       .then(text => {
+        console.log(`Definitions raw text length: ${text.length}`);
         const parsedDefinitions = text.split('\n').reduce((acc, line) => {
-          const [rootPart, definitionsPart] = line.split('~', 2);
-          const root = rootPart.trim();
-          const definitions = definitionsPart.split(';').map(definition => definition.trim());
-          acc[root] = definitions;
+          if (line.trim()) {
+            const [rootPart, definitionsPart] = line.split('~', 2);
+            if (rootPart && definitionsPart) {
+              const root = rootPart.trim();
+              const definitions = definitionsPart.split(';').map(definition => definition.trim());
+              acc[root] = definitions;
+            }
+          }
           return acc;
         }, {});
+        console.log(`Definitions parsed entries: ${Object.keys(parsedDefinitions).length}`);
         setState(parsedDefinitions);
+      })
+      .catch(error => {
+        console.error(`Error loading definitions:`, error);
       });
   }, []);
 
   useEffect(() => {
+    console.log("Starting to load all indices...");
+    
     fetch(`${process.env.PUBLIC_URL}/db_files/index.txt`)
       .then(response => response.text())
       .then(text => {
@@ -66,13 +104,12 @@ const App = () => {
         setIndex(parsedIndex);
       });
 
-    loadIndex(`${process.env.PUBLIC_URL}/indices/hw.txt`, setHwIndex);
-    loadIndex(`${process.env.PUBLIC_URL}/indices/sg.txt`, setSgIndex);
-    loadIndex(`${process.env.PUBLIC_URL}/indices/ll.txt`, setLlIndex);
-    loadIndex(`${process.env.PUBLIC_URL}/indices/ls.txt`, setLsIndex);
-    loadIndex(`${process.env.PUBLIC_URL}/indices/ha.txt`, setHaIndex);
+    loadIndex(`${process.env.PUBLIC_URL}/indices/hw.txt`, setHwIndex, 'hw');
+    loadIndex(`${process.env.PUBLIC_URL}/indices/sg.txt`, setSgIndex, 'sg');
+    loadIndex(`${process.env.PUBLIC_URL}/indices/ll.txt`, setLlIndex, 'll');
+    loadIndex(`${process.env.PUBLIC_URL}/indices/ls.txt`, setLsIndex, 'ls');
+    loadIndex(`${process.env.PUBLIC_URL}/indices/ha.txt`, setHaIndex, 'ha');
     loadDefinitions(`${process.env.PUBLIC_URL}/db_files/root_definitions.txt`, setRootDefinitionList);
-
   }, [loadIndex, loadDefinitions]);
 
   const indexOfLastResult = currentPage * resultsPerPage;
@@ -148,7 +185,6 @@ const App = () => {
           </div>
         </div>
       </Layout>
-
     </Router>
   );
 };

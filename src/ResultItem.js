@@ -18,6 +18,15 @@ const ResultItem = memo(({ result, hwIndex, sgIndex, llIndex, lsIndex, haIndex, 
   const [word, roots] = result.split('#');
   const rootList = roots.split(',');
 
+  // Check if indices are loaded
+  const indicesLoaded = useMemo(() => {
+    return Object.keys(hwIndex).length > 0 && 
+           Object.keys(sgIndex).length > 0 &&
+           Object.keys(llIndex).length > 0 &&
+           Object.keys(lsIndex).length > 0 &&
+           Object.keys(haIndex).length > 0;
+  }, [hwIndex, sgIndex, llIndex, lsIndex, haIndex]);
+
   const wordLinks = useCallback((term) => {
     const replacedTerm = replaceHamza(term);
     return {
@@ -29,9 +38,14 @@ const ResultItem = memo(({ result, hwIndex, sgIndex, llIndex, lsIndex, haIndex, 
     };
   }, [hwIndex, sgIndex, llIndex, lsIndex, haIndex]);
 
-  const wordLinksResult = useMemo(() => wordLinks(word), [word, wordLinks]);
+  const wordLinksResult = useMemo(() => {
+    if (!indicesLoaded) return null;
+    return wordLinks(word);
+  }, [indicesLoaded, word, wordLinks]);
 
   const renderRootResult = useCallback((root, rIdx) => {
+    if (!indicesLoaded) return null;
+    
     const definitions = DataLoader.findDefinition(root, rootDefinitionList);
     const rootLinksResult = wordLinks(root);
 
@@ -55,7 +69,12 @@ const ResultItem = memo(({ result, hwIndex, sgIndex, llIndex, lsIndex, haIndex, 
         </div>
       </div>
     );
-  }, [wordLinks, rootDefinitionList]);
+  }, [indicesLoaded, wordLinks, rootDefinitionList]);
+
+  // Don't render anything if indices haven't loaded yet
+  if (!indicesLoaded) {
+    return null;
+  }
 
   return (
       <div className='search-result flex'>

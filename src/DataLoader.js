@@ -11,33 +11,33 @@ const DataLoader = {
     }
 
     if (!indexData || Object.keys(indexData).length === 0) {
-      console.error(`${dictionary} index is empty or not loaded.`);
+      console.warn(`${dictionary} index is empty or not loaded.`);
       return '#';
     }
 
+    // Convert to sorted array of [root, pageNumber] pairs
     const sortedEntries = Object.entries(indexData)
       .map(([key, value]) => [key.trim(), value])
       .sort((a, b) => a[0].localeCompare(b[0]));
 
-    let left = 0;
-    let right = sortedEntries.length - 1;
-
-    while (left <= right) {
-      const mid = Math.floor((left + right) / 2);
-      const comparison = normalizedRoot.localeCompare(sortedEntries[mid][0]);
-
-      if (comparison === 0) {
-        return getPage(sortedEntries[mid][1], dictionary);
-      } else if (comparison < 0) {
-        right = mid - 1;
-      } else {
-        left = mid + 1;
+    // Linear search for exact match (simpler and more reliable)
+    for (const [key, pageNum] of sortedEntries) {
+      if (key === normalizedRoot) {
+        return getPage(pageNum, dictionary);
       }
     }
 
-    // if no exact match is found, use the closest entry
-    const page = sortedEntries[left] ? sortedEntries[left][1] : sortedEntries[sortedEntries.length - 1][1];
-    return getPage(page, dictionary);
+    // If no exact match, find closest match
+    let closest = sortedEntries[0][1];
+    for (const [key, pageNum] of sortedEntries) {
+      if (key.localeCompare(normalizedRoot) <= 0) {
+        closest = pageNum;
+      } else {
+        break;
+      }
+    }
+
+    return getPage(closest, dictionary);
   },
 
   findDefinition: (root, indexData) => {
@@ -47,7 +47,7 @@ const DataLoader = {
     }
 
     if (!indexData || Object.keys(indexData).length === 0) {
-      console.error('Index data is empty or not loaded.');
+      console.warn('Definition index is empty or not loaded.');
       return [];
     }
 
@@ -57,11 +57,12 @@ const DataLoader = {
       .replace(/[أء]/g, '[أء]')
       .replace(/[و]$/, '[يى]')
       .trim();
-      const rootRegex = new RegExp(`^${normalizedRoot}$`);
+    const rootRegex = new RegExp(`^${normalizedRoot}$`);
 
     // find the matching root in the index data
     const matchingRoot = Object.keys(indexData).find(key => rootRegex.test(key));
     const definitions = indexData[matchingRoot];
+    
     if (!definitions) {
       return ['No Quick Definition Found. Check dictionaries below, especially Steingass and Hava.']; 
     }
@@ -71,6 +72,10 @@ const DataLoader = {
 };
 
 function getPage(page, dictionary) {
+  if (typeof page !== 'number') {
+    console.warn(`Expected number for page, got ${typeof page}:`, page);
+    return '#';
+  }
   return `${page.toString().padStart(4, '0')}`;
 }
 
