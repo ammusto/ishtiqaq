@@ -1,6 +1,6 @@
 # ishtiqaq
 
-ishtiqaq is a tool for reading arabic manuscripts. when you hit a word whose rasm (the consonantal skeleton) is unclear, you can mark the ambiguous letters and search every possible reading at once. each match comes back with its root, a short english gloss, and links into several dictionaries.
+ishtiqaq is a tool for reading arabic manuscripts. when you come across a word whose rasm (the consonantal skeleton) is unclear, you can mark the ambiguous letters and search every possible reading at once. each match comes back with its root, a short english gloss, and links into several dictionaries.
 
 ## no backend
 
